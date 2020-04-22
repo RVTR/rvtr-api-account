@@ -2,9 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace RVTR.Account.ObjectModel.Abstracts
+namespace RVTR.Account.ObjectModel.Util
 {
-  public abstract class AHash
+  public abstract class Hash
   {
     private static SHA1Managed sha1_state = new SHA1Managed();
     private string _hash = Encoding.Default.GetString(sha1_state.ComputeHash(Encoding.ASCII.GetBytes("hello "))).Substring(0,4); // returns the first 4 chars of the SHA1 hash

@@ -1,11 +1,31 @@
+using System.ComponentModel.DataAnnotations;
+
+using RVTR.Account.ObjectModel.Util;
+
 namespace RVTR.Account.ObjectModel.Models{
-  public class Address{
+  public class Address
+  {
+    public string AddressID { get => AddressID ; set{
+      AddressID = Hash.hash(value);
+    } } 
+    [Display(Name = "Street address")]
+    [Required(ErrorMessage = "Street address is required.")]
     public string StreetAddress1 { get; set; }
+    [Display(Name = "Street address")]
     public string StreetAddress2 { get; set; }
+    [Display(Name = "City")]
+    [Required(ErrorMessage = "City is required.")]
     public string City { get; set; }
+    [Display(Name = "State")]
+    [Required(ErrorMessage = "State is required.")]
     public string State { get; set; }
-    public string Zip { get; set; }
+    [Display(Name = "Zip code")]
+    [Required(ErrorMessage = "Zip code is required.")]
+    public string ZipCode { get; set; }
+    [Display(Name = "Country")]
+    [Required(ErrorMessage = "Country is required.")]
     public string Country { get; set; }
+    
 
   }
   
