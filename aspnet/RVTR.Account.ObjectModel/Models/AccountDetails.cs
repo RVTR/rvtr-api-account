@@ -3,6 +3,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public class AccountDetails 
   {
     [Key]
@@ -13,5 +16,6 @@ namespace RVTR.Account.ObjectModel.Models
     [Required(ErrorMessage = "Account type is required.")]
     public string AccountType { get; set; }
     public AccountRewards AccountRewards { get; set; }
+    
   }
 }

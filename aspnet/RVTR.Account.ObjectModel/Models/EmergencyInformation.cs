@@ -3,6 +3,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
+  /// <summary>
+  /// In case of user Incident, provides information on someone to be contacted.
+  /// </summary>
   public class EmergencyInformation : ContactInformation
   {
     [Key]

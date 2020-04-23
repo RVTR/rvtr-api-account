@@ -3,6 +3,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
+  /// <summary>
+  /// Data for Communication with user including Email, and Phone Number.
+  /// </summary>
   public class ContactInformation 
   {
     [Key]

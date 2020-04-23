@@ -25,6 +25,8 @@ namespace RVTR.Account.WebApi
 
     public void ConfigureServices(IServiceCollection services)
     {
+      // services.AddDbContext<AccountDBContext>(options => options.UseInMemoryDatabase(databaseName: "Accounts"));
+
       services.AddControllers();
 
       services.AddCors(cors =>

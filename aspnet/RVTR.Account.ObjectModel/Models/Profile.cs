@@ -3,6 +3,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models 
 {
+  /// <summary>
+  /// References All Objects with data provided by user
+  /// </summary>
   public class Profile 
   {
     [Key]

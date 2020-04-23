@@ -5,6 +5,10 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models 
 {
+  /// <summary>
+  /// References Profile and Account details to display all data related to one Account.
+  /// </summary>
+  
   public class AccountModel 
   {
     [Key]
