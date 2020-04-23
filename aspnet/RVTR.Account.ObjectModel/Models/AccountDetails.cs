@@ -4,7 +4,7 @@ using RVTR.Account.ObjectModel.Util;
 namespace RVTR.Account.ObjectModel.Models
 {
   /// <summary>
-  /// 
+  /// Account Details [Considering Merge with AccountModel.cs...]
   /// </summary>
   public class AccountDetails 
   {
@@ -16,6 +16,11 @@ namespace RVTR.Account.ObjectModel.Models
     [Required(ErrorMessage = "Account type is required.")]
     public string AccountType { get; set; }
     public AccountRewards AccountRewards { get; set; }
-    
+
+    #region NAVIGATIONAL PROPERTIES
+    public AccountModel AccountModel { get; set; }
+
+    #endregion
+
   }
 }

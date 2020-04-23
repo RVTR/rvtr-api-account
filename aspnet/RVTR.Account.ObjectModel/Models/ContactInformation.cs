@@ -22,5 +22,13 @@ namespace RVTR.Account.ObjectModel.Models
     [RegularExpression("^[0-9]*$", ErrorMessage = "Phone number must be numeric.")]
     [Required(ErrorMessage = "Phone number is required.")]
     public string PhoneNumber { get; set; }
+
+    #region NAVIGATIONAL PROPERTIES
+    
+    public Profile Profile { get; set; }
+
+    public EmergencyInformation EmergencyInformation { get; set; }
+
+    #endregion
   }
 }

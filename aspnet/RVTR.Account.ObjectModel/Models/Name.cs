@@ -4,6 +4,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
+  /// <summary>
+  /// Contains information on how to interact with user such as Preferred name and Language.
+  /// </summary>
   public class Name 
   {
     [Key]
@@ -35,5 +38,11 @@ namespace RVTR.Account.ObjectModel.Models
     [Display(Name = "Language")]
     [Required(ErrorMessage = "Language is required.")]
     public string Language { get; set; }
+
+    #region NAVIGATIONAL PROPERTIES
+    
+    public Profile Profile { get; set; }
+
+    #endregion
   }
 }

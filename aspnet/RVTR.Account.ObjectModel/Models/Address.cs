@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models{
+  /// <summary>
+  /// Basic Location details such as Street Address, City, State, etc.
+  /// </summary>
   public class Address
   {
     [Key]
@@ -26,6 +29,12 @@ namespace RVTR.Account.ObjectModel.Models{
     [Display(Name = "Country")]
     [Required(ErrorMessage = "Country is required.")]
     public string Country { get; set; }
+
+    #region NAVIGATIONAL PROPERTIES
+    
+    public Profile Profile { get; set; }
+
+    #endregion
     
 
   }

@@ -4,7 +4,7 @@ using RVTR.Account.ObjectModel.Util;
 namespace RVTR.Account.ObjectModel.Models 
 {
   /// <summary>
-  /// References All Objects with data provided by user
+  /// References All Objects with data provided by user.
   /// </summary>
   public class Profile 
   {
@@ -20,6 +20,12 @@ namespace RVTR.Account.ObjectModel.Models
     public Address Address { get; set; }
     public Payment Payment { get; set; }
     public Name Name { get; set; }
-    public EmergencyInformation EmergencyContact { get; set; }
+    public EmergencyInformation EmergencyInformation { get; set; }
+
+    #region NAVIGATIONAL PROPERTIES
+    
+    public AccountModel AccountModel { get; set; }
+
+    #endregion
   }
 }

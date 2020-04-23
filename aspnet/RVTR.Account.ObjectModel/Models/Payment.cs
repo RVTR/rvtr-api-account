@@ -4,6 +4,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
+  /// <summary>
+  /// Contains information on how users plan to pay for services and related informtion.
+  /// </summary>
   public class Payment 
   {
     [Key]
@@ -34,5 +37,11 @@ namespace RVTR.Account.ObjectModel.Models
     [Display(Name = "Billing address")]
     [Required(ErrorMessage = "Billing address is required.")]
     public Address BillingAddress { get; set; }
+
+    #region NAVIGATIONAL PROPERTIES
+    
+    public Profile Profile { get; set; }
+
+    #endregion
   }
 }

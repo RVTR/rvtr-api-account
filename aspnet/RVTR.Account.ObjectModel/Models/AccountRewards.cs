@@ -3,6 +3,9 @@ using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
+  /// <summary>
+  /// Contains Reward information for related Account.
+  /// </summary>
   public class AccountRewards 
   {
     [Key]
@@ -11,5 +14,10 @@ namespace RVTR.Account.ObjectModel.Models
     } } 
     public string RewardsStatus { get; set; }
     public int RewardsPoints { get; set; }
+
+    #region NAVIGATIONAL PROPERTIES
+    public AccountDetails AccountDetails { get; set; }
+
+    #endregion
   }
 }

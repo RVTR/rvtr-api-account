@@ -43,7 +43,8 @@ namespace RVTR.Account.DataContext
       builder.Entity<Profile>().HasOne(x => x.Name).WithOne(x => x.Profile);
       builder.Entity<Profile>().HasOne(x => x.Address).WithOne(x => x.Profile);
       builder.Entity<Profile>().HasOne(x => x.Payment).WithOne(x => x.Profile);
-      builder.Entity<Profile>().HasOne(x => x.Name).WithOne(x => x.Profile);
+      builder.Entity<Profile>().HasOne(x => x.ContactInformation).WithOne(x => x.Profile);
+      builder.Entity<Profile>().HasOne(x => x.EmergencyInformation).WithOne(x => x.Profile);
     }
     
     // Input dummy data
