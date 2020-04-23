@@ -13,14 +13,13 @@ namespace RVTR.Account.ObjectModel.Models
 using System.ComponentModel.DataAnnotations;
 >>>>>>> Added validation annotations and hash fields.
 using System.Security.Cryptography;
-
-// using RVTR.Account.ObjectModel.Interfaces;
 using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models 
 {
   public class AccountModel 
   {
+    [Key]
     public string AccountID { get => AccountID ; set{
       AccountID = Hash.hash(value);
     } } 

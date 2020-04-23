@@ -1,12 +1,11 @@
 using System.ComponentModel.DataAnnotations;
-
-// using RVTR.Account.ObjectModel.Interfaces;
 using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
   public class AccountRewards 
   {
+    [Key]
     public string AccountRewardsID { get => AccountRewardsID ; set{
       AccountRewardsID = Hash.hash(value);
     } } 

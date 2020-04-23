@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-
 using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models{
   public class Address
   {
+    [Key]
     public string AddressID { get => AddressID ; set{
       AddressID = Hash.hash(value);
     } } 
@@ -21,6 +21,7 @@ namespace RVTR.Account.ObjectModel.Models{
     public string State { get; set; }
     [Display(Name = "Zip code")]
     [Required(ErrorMessage = "Zip code is required.")]
+    [RegularExpression("^[0-9]*$", ErrorMessage = "Zip code must be numeric.")]
     public string ZipCode { get; set; }
     [Display(Name = "Country")]
     [Required(ErrorMessage = "Country is required.")]

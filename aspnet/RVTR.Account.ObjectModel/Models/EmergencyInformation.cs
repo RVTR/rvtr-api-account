@@ -1,9 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using RVTR.Account.ObjectModel.Util;
 
 namespace RVTR.Account.ObjectModel.Models
 {
-  public class EmergencyInformation: ContactInformation
+  public class EmergencyInformation : ContactInformation
   {
+    [Key]
+    public string EmergencyInformationID { get => EmergencyInformationID ; set{
+      EmergencyInformationID = Hash.hash(value);
+    } } 
     [Display(Name = "Name")]
     [Required(ErrorMessage = "Name is required.")]
     public string EmergencyContactName { get; set; }

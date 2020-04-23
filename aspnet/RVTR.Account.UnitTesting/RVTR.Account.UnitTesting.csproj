@@ -22,4 +22,8 @@
     <ProjectReference Include="..\RVTR.Account.DataContext\RVTR.Account.DataContext.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RVTR.Account.ObjectModel\RVTR.Account.ObjectModel.csproj" />
+  </ItemGroup>
+
 </Project>
