@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
+using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
 using Xunit;
 
@@ -40,9 +41,9 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var lodgings = new Repository<AccountModel>(ctx);
+          var lodgings = new AccountRepository(ctx);
 
-          await lodgings.DeleteAsync(1);
+          await lodgings.Delete(1);
           await ctx.SaveChangesAsync();
 
           Assert.Empty(await ctx.Accounts.ToListAsync());
@@ -50,9 +51,9 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var profiles = new Repository<ProfileModel>(ctx);
+          var profiles = new ProfileRepository(ctx);
 
-          await profiles.DeleteAsync(1);
+          await profiles.Delete(1);
           await ctx.SaveChangesAsync();
 
           Assert.Empty(await ctx.Profiles.ToListAsync());
@@ -79,9 +80,9 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var lodgings = new Repository<AccountModel>(ctx);
+          var lodgings = new AccountRepository(ctx);
 
-          await lodgings.InsertAsync(lodging);
+          await lodgings.Update(lodging);
           await ctx.SaveChangesAsync();
 
           Assert.NotEmpty(await ctx.Accounts.ToListAsync());
@@ -89,9 +90,9 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var profiles = new Repository<ProfileModel>(ctx);
+          var profiles = new ProfileRepository(ctx);
 
-          await profiles.InsertAsync(profile);
+          await profiles.Update(profile);
           await ctx.SaveChangesAsync();
 
           Assert.NotEmpty(await ctx.Profiles.ToListAsync());
@@ -117,18 +118,18 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var lodgings = new Repository<AccountModel>(ctx);
+          var lodgings = new AccountRepository(ctx);
 
-          var actual = await lodgings.SelectAsync();
+          var actual = await lodgings.GetAll();
 
           Assert.Empty(actual);
         }
 
         using (var ctx = new AccountContext(_options))
         {
-          var profiles = new Repository<ProfileModel>(ctx);
+          var profiles = new ProfileRepository(ctx);
 
-          var actual = await profiles.SelectAsync();
+          var actual = await profiles.GetAll();
 
           Assert.Empty(actual);
         }
@@ -153,18 +154,18 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var lodgings = new Repository<AccountModel>(ctx);
+          var lodgings = new AccountRepository(ctx);
 
-          var actual = await lodgings.SelectAsync(1);
+          var actual = await lodgings.Get(1);
 
           Assert.Null(actual);
         }
 
         using (var ctx = new AccountContext(_options))
         {
-          var profiles = new Repository<ProfileModel>(ctx);
+          var profiles = new ProfileRepository(ctx);
 
-          var actual = await profiles.SelectAsync(1);
+          var actual = await profiles.Get(1);
 
           Assert.Null(actual);
         }
@@ -193,11 +194,11 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var lodgings = new Repository<AccountModel>(ctx);
+          var lodgings = new AccountRepository(ctx);
           var expected = await ctx.Accounts.FirstAsync();
 
           expected.Name = "name";
-          lodgings.Update(expected);
+          await lodgings.Update(expected);
           await ctx.SaveChangesAsync();
 
           var actual = await ctx.Accounts.FirstAsync();
@@ -207,11 +208,11 @@ namespace RVTR.Account.UnitTesting.Tests
 
         using (var ctx = new AccountContext(_options))
         {
-          var profiles = new Repository<ProfileModel>(ctx);
+          var profiles = new ProfileRepository(ctx);
           var expected = await ctx.Profiles.FirstAsync();
 
           expected.Email = "email";
-          profiles.Update(expected);
+          await profiles.Update(expected);
           await ctx.SaveChangesAsync();
 
           var actual = await ctx.Profiles.FirstAsync();

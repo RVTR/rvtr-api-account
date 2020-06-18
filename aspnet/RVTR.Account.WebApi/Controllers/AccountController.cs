@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RVTR.Account.DataContext.Repositories;
+using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
 
 namespace RVTR.Account.WebApi.Controllers
@@ -17,14 +19,14 @@ namespace RVTR.Account.WebApi.Controllers
   public class AccountController : ControllerBase
   {
     private readonly ILogger<AccountController> _logger;
-    private readonly UnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
     /// <summary>
     ///
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="unitOfWork"></param>
-    public AccountController(ILogger<AccountController> logger, UnitOfWork unitOfWork)
+    public AccountController(ILogger<AccountController> logger, IUnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
@@ -40,8 +42,8 @@ namespace RVTR.Account.WebApi.Controllers
     {
       try
       {
-        await _unitOfWork.Account.DeleteAsync(id);
-        await _unitOfWork.CommitAsync();
+        await _unitOfWork.AccountRepository.Delete(id);
+        await _unitOfWork.Complete();
 
         return Ok();
       }
@@ -58,7 +60,7 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-      return Ok(await _unitOfWork.Account.getAllAccounts());
+      return Ok(await _unitOfWork.AccountRepository.GetAll());
     }
 
     /// <summary>
@@ -71,7 +73,7 @@ namespace RVTR.Account.WebApi.Controllers
     {
       try
       {
-        return Ok(await _unitOfWork.Account.getAccount(id));
+        return Ok( new List<AccountModel> { await _unitOfWork.AccountRepository.Get(id) });
       }
       catch
       {
@@ -87,8 +89,8 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPost]
     public async Task<IActionResult> Post(AccountModel account)
     {
-      await _unitOfWork.Account.InsertAsync(account);
-      await _unitOfWork.CommitAsync();
+      await _unitOfWork.AccountRepository.Update(account);
+      await _unitOfWork.Complete();
 
       return Accepted(account);
     }
@@ -101,8 +103,8 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     public async Task<IActionResult> Put(AccountModel account)
     {
-      _unitOfWork.Account.Update(account);
-      await _unitOfWork.CommitAsync();
+      await _unitOfWork.AccountRepository.Update(account);
+      await _unitOfWork.Complete();
 
       return Accepted(account);
     }
