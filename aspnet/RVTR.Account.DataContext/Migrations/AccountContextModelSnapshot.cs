@@ -66,7 +66,7 @@ namespace RVTR.Account.DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AddressModel");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("RVTR.Account.ObjectModel.Models.NameModel", b =>
@@ -90,7 +90,7 @@ namespace RVTR.Account.DataContext.Migrations
                     b.HasIndex("ProfileId")
                         .IsUnique();
 
-                    b.ToTable("NameModel");
+                    b.ToTable("Names");
                 });
 
             modelBuilder.Entity("RVTR.Account.ObjectModel.Models.PaymentModel", b =>
@@ -116,7 +116,7 @@ namespace RVTR.Account.DataContext.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("PaymentModel");
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("RVTR.Account.ObjectModel.Models.ProfileModel", b =>

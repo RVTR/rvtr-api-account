@@ -9,7 +9,7 @@ namespace RVTR.Account.DataContext.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AddressModel",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -23,7 +23,7 @@ namespace RVTR.Account.DataContext.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AddressModel", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,15 +39,15 @@ namespace RVTR.Account.DataContext.Migrations
                 {
                     table.PrimaryKey("PK_Accounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Accounts_AddressModel_AddressId",
+                        name: "FK_Accounts_Addresses_AddressId",
                         column: x => x.AddressId,
-                        principalTable: "AddressModel",
+                        principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentModel",
+                name: "Payments",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -59,9 +59,9 @@ namespace RVTR.Account.DataContext.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentModel", x => x.Id);
+                    table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PaymentModel_Accounts_AccountId",
+                        name: "FK_Payments_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
@@ -92,7 +92,7 @@ namespace RVTR.Account.DataContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NameModel",
+                name: "Names",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -103,9 +103,9 @@ namespace RVTR.Account.DataContext.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NameModel", x => x.Id);
+                    table.PrimaryKey("PK_Names", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NameModel_Profiles_ProfileId",
+                        name: "FK_Names_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
@@ -118,14 +118,14 @@ namespace RVTR.Account.DataContext.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NameModel_ProfileId",
-                table: "NameModel",
+                name: "IX_Names_ProfileId",
+                table: "Names",
                 column: "ProfileId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentModel_AccountId",
-                table: "PaymentModel",
+                name: "IX_Payments_AccountId",
+                table: "Payments",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
@@ -137,10 +137,10 @@ namespace RVTR.Account.DataContext.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "NameModel");
+                name: "Names");
 
             migrationBuilder.DropTable(
-                name: "PaymentModel");
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Profiles");
@@ -149,7 +149,7 @@ namespace RVTR.Account.DataContext.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
-                name: "AddressModel");
+                name: "Addresses");
         }
     }
 }
