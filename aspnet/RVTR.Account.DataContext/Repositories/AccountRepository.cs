@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,26 +9,40 @@ using RVTR.Account.ObjectModel.Models;
 
 namespace RVTR.Account.DataContext.Repositories
 {
-  public class AccountRepository : Repository<AccountModel>
+  public class AccountRepository : GenericRepository<AccountModel>
   {
-    public readonly AccountContext db;
     public AccountRepository(AccountContext context):base(context)
     {
-      db = context;
     }
 
-    public async Task<AccountModel[]> getAllAccounts()
+    public override async Task<IEnumerable<AccountModel>> GetAll()
     {
-      var accounts = await db.Accounts.Include(x => x.Address).Include(x => x.Payments)
-        .Include(x => x.Profiles).ThenInclude(x => x.Name).ToArrayAsync();
-      return accounts;
+      return await _context.Accounts
+        .Include(x => x.Address)
+        .Include(x => x.Payments)
+        .Include(x => x.Profiles)
+        .ThenInclude(x => x.Name).ToListAsync();
     }
-    public async Task<AccountModel[]> getAccount(int accountId)
+    public override async Task<AccountModel> Get(int id)
     {
-      var accounts = await db.Accounts.Include(x => x.Address).Include(x => x.Payments)
-        .Include(x => x.Profiles).ThenInclude(x => x.Name).Where(x => x.Id == accountId).ToArrayAsync();
+      return await _context.Accounts
+        .Include(x => x.Address)
+        .Include(x => x.Payments)
+        .Include(x => x.Profiles)
+        .ThenInclude(x => x.Name)
+        .Where(x => x.Id == id)
+        .FirstOrDefaultAsync();
+    }
+    //public async Task<AccountModel[]> getAccount(int accountId)
+    //{
+    //  var accounts = await _context.Accounts
+    //    .Include(x => x.Address)
+    //    .Include(x => x.Payments)
+    //    .Include(x => x.Profiles)
+    //    .ThenInclude(x => x.Name)
+    //    .Where(x => x.Id == accountId).ToArrayAsync();
 
-      return accounts;
-    }
+    //  return accounts;
+    //}
   }
 }

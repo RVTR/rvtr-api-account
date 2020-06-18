@@ -1,30 +1,53 @@
 using System.Threading.Tasks;
+using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
 
 namespace RVTR.Account.DataContext.Repositories
 {
-  /// <summary>
-  /// Represents the _UnitOfWork_ repository
-  /// </summary>
-  public class UnitOfWork
+  public class UnitOfWork : IUnitOfWork
   {
     private readonly AccountContext _context;
-
-    public virtual AccountRepository Account { get; }
-    public virtual Repository<ProfileModel> Profile { get; }
 
     public UnitOfWork(AccountContext context)
     {
       _context = context;
-
-      Account = new AccountRepository(context);
-      Profile = new Repository<ProfileModel>(context);
     }
 
-    /// <summary>
-    /// Represents the _UnitOfWork_ `Commit` method
-    /// </summary>
-    /// <returns></returns>
-    public async Task<int> CommitAsync() => await _context.SaveChangesAsync();
+    private IRepository<AccountModel> accountRepository;
+    public IRepository<AccountModel> AccountRepository
+    {
+      get
+      {
+        if (accountRepository == null)
+          accountRepository = new AccountRepository(_context);
+
+        return accountRepository;
+      }
+    }
+    private IRepository<PaymentModel> paymentRepository;
+    public IRepository<PaymentModel> PaymentRepository
+    {
+      get
+      {
+        if (paymentRepository == null)
+          paymentRepository = new PaymentRepository(_context);
+
+        return paymentRepository;
+      }
+    }
+
+    private IRepository<ProfileModel> profileRepository;
+    public IRepository<ProfileModel> ProfileRepository
+    {
+      get
+      {
+        if (profileRepository == null)
+          profileRepository = new ProfileRepository(_context);
+
+        return profileRepository;
+      }
+    }
+
+    public async Task Complete() => await _context.SaveChangesAsync();
+    }
   }
-}

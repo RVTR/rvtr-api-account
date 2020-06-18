@@ -26,11 +26,11 @@ namespace RVTR.Account.UnitTesting.Tests
         using (var ctx = new AccountContext(_options))
         {
           var unitOfWork = new UnitOfWork(ctx);
-          var actual = await unitOfWork.CommitAsync();
+          await unitOfWork.Complete();
 
-          Assert.NotNull(unitOfWork.Account);
-          Assert.NotNull(unitOfWork.Profile);
-          Assert.Equal(0, actual);
+          Assert.NotNull(unitOfWork.AccountRepository);
+          Assert.NotNull(unitOfWork.ProfileRepository);
+          //Assert.Equal(0, actual);
         }
       }
       finally

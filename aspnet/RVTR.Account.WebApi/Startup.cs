@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
+using RVTR.Account.ObjectModel.Interface;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using zipkin4net.Middleware;
 
@@ -63,7 +64,7 @@ namespace RVTR.Account.WebApi
       });
 
       services.AddScoped<ClientZipkinMiddleware>();
-      services.AddScoped<UnitOfWork>();
+      services.AddScoped<IUnitOfWork, UnitOfWork>();
       services.AddSwaggerGen();
       services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ClientSwaggerOptions>();
       services.AddVersionedApiExplorer(options =>

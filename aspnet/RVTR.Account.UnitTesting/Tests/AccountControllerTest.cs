@@ -28,14 +28,14 @@ namespace RVTR.Account.UnitTesting.Tests
       var repositoryMock = new Mock<AccountRepository>(new AccountContext(_options));
       var unitOfWorkMock = new Mock<UnitOfWork>(contextMock.Object);
 
-      repositoryMock.Setup(m => m.DeleteAsync(0)).Throws(new Exception());
-      repositoryMock.Setup(m => m.DeleteAsync(1)).Returns(Task.FromResult(1));
-      repositoryMock.Setup(m => m.InsertAsync(It.IsAny<AccountModel>())).Returns(Task.FromResult<AccountModel>(null));
-      repositoryMock.Setup(m => m.SelectAsync()).Returns(Task.FromResult<IEnumerable<AccountModel>>(null));
-      repositoryMock.Setup(m => m.SelectAsync(0)).Throws(new Exception());
-      repositoryMock.Setup(m => m.SelectAsync(1)).Returns(Task.FromResult<AccountModel>(null));
+      repositoryMock.Setup(m => m.Delete(0)).Throws(new Exception());
+      repositoryMock.Setup(m => m.Delete(1)).Returns(Task.FromResult(1));
+      repositoryMock.Setup(m => m.Update(It.IsAny<AccountModel>())).Returns(Task.FromResult<AccountModel>(null));
+      repositoryMock.Setup(m => m.GetAll()).Returns(Task.FromResult<IEnumerable<AccountModel>>(null));
+      repositoryMock.Setup(m => m.Get(0)).Throws(new Exception());
+      repositoryMock.Setup(m => m.Get(1)).Returns(Task.FromResult<AccountModel>(null));
       repositoryMock.Setup(m => m.Update(It.IsAny<AccountModel>()));
-      unitOfWorkMock.Setup(m => m.Account).Returns(repositoryMock.Object);
+      unitOfWorkMock.Setup(m => m.AccountRepository).Returns(repositoryMock.Object);
 
       _logger = loggerMock.Object;
       _unitOfWork = unitOfWorkMock.Object;
