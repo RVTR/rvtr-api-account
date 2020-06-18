@@ -7,6 +7,7 @@ namespace RVTR.Account.ObjectModel.Models
   /// <summary>
   /// Represents the _Profile_ model
   /// </summary>
+  [Table("Profiles")]
   public class ProfileModel : IValidatableObject
   {
     [ForeignKey("NameModel")]

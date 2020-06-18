@@ -33,16 +33,5 @@ namespace RVTR.Account.DataContext.Repositories
         .Where(x => x.Id == id)
         .FirstOrDefaultAsync();
     }
-    //public async Task<AccountModel[]> getAccount(int accountId)
-    //{
-    //  var accounts = await _context.Accounts
-    //    .Include(x => x.Address)
-    //    .Include(x => x.Payments)
-    //    .Include(x => x.Profiles)
-    //    .ThenInclude(x => x.Name)
-    //    .Where(x => x.Id == accountId).ToArrayAsync();
-
-    //  return accounts;
-    //}
   }
 }

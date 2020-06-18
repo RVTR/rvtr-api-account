@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RVTR.Account.ObjectModel.Models
 {
   /// <summary>
   /// Represents the _Address_ model
   /// </summary>
+  [Table("Addresses")]
   public class AddressModel : IValidatableObject
   {
     public int Id { get; set; }
