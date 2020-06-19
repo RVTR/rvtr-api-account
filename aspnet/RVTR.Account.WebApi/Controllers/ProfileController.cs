@@ -1,8 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RVTR.Account.DataContext.Repositories;
 using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
 
@@ -53,13 +54,21 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    ///
+    /// 
     /// </summary>
+    /// <param name="accountId"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(int? accountId)
     {
-      return Ok(await _unitOfWork.ProfileRepository.GetAll());
+      IEnumerable<ProfileModel> profiles;
+
+      if (accountId == null)
+        profiles = await _unitOfWork.ProfileRepository.GetAll();
+      else
+        profiles = await _unitOfWork.ProfileRepository.Find(p => p.AccountId == accountId);
+
+      return Ok(profiles);
     }
 
     /// <summary>

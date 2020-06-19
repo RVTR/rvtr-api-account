@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RVTR.Account.DataContext.Repositories;
+using RVTR.Account.ObjectModel.BusinessL;
 using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
 
@@ -60,7 +61,15 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-      return Ok(await _unitOfWork.AccountRepository.GetAll());
+      var accounts = await _unitOfWork.AccountRepository.GetAll();
+      foreach (var account in accounts)
+      {
+        foreach (var payment in account.Payments)
+        {
+          payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
+        }
+      }
+      return Ok(accounts);
     }
 
     /// <summary>
@@ -73,7 +82,13 @@ namespace RVTR.Account.WebApi.Controllers
     {
       try
       {
-        return Ok( new List<AccountModel> { await _unitOfWork.AccountRepository.Get(id) });
+        var account = await _unitOfWork.AccountRepository.Get(id);
+        foreach (var payment in account.Payments)
+        {
+          payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
+        }
+
+        return Ok(new List<AccountModel> { account });
       }
       catch
       {
