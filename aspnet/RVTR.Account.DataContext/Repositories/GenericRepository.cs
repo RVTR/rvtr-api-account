@@ -24,11 +24,8 @@ namespace RVTR.Account.DataContext.Repositories
       return entity;
     }
 
-    public async virtual Task Delete(int id)
-    {
-      var ent = await Get(id);
-      _context.Remove(ent);
-    }
+    public abstract Task Delete(int id);
+    
 
     public async virtual Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
     {

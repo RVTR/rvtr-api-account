@@ -26,5 +26,11 @@ namespace RVTR.Account.DataContext.Repositories
         .Where(x => x.Id == id)
         .FirstOrDefaultAsync();
     }
+
+    public async override Task Delete(int id)
+    {
+      var ent = await Get(id);
+      _context.Profiles.Remove(ent);
+    }
   }
 }
