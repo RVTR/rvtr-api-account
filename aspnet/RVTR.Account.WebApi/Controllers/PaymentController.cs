@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RVTR.Account.DataContext;
+using RVTR.Account.ObjectModel.BusinessL;
 using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
 
@@ -31,9 +32,23 @@ namespace RVTR.Account.WebApi.Controllers
 
     // GET: api/Payment
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PaymentModel>>> Get()
+    public async Task<ActionResult<IEnumerable<PaymentModel>>> Get(int? accountId)
     {
-      return Ok(await _unitOfWork.PaymentRepository.GetAll());
+      IEnumerable<PaymentModel> payments;
+      if (accountId == null)
+        payments = await _unitOfWork.PaymentRepository.GetAll();
+      else
+      {
+        payments = await _unitOfWork.PaymentRepository.Find(p => p.AccountId == accountId);
+      }
+      if (payments != null && payments.Count() > 0)
+      {
+        foreach (var payment in payments)
+        {
+          payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
+        }
+      }
+      return Ok(payments);
     }
 
     // GET: api/Payment/5
@@ -42,7 +57,13 @@ namespace RVTR.Account.WebApi.Controllers
     {
       try
       {
-        return Ok(await _unitOfWork.PaymentRepository.Get(id));
+        var payment = await _unitOfWork.PaymentRepository.Get(id);
+
+        if (payment == null)
+          return NotFound(id);
+
+        payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
+        return Ok(payment);
       }
       catch
       {
@@ -53,21 +74,21 @@ namespace RVTR.Account.WebApi.Controllers
     // PUT: api/Payment/5
     // To protect from overposting attacks, enable the specific properties you want to bind to, for
     // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-    [HttpPut]
-    public async Task<IActionResult> Put(PaymentModel payment)
-    {
-      await _unitOfWork.PaymentRepository.Update(payment);
+    //[HttpPut]
+    //public async Task<IActionResult> Put(PaymentModel payment)
+    //{
+    //  await _unitOfWork.PaymentRepository.Update(payment);
 
-      try
-      {
-        await _unitOfWork.Complete();
-      }
-      catch (DbUpdateConcurrencyException)
-      {
-        return NotFound();
-      }
-      return Accepted(payment);
-    }
+    //  try
+    //  {
+    //    await _unitOfWork.Complete();
+    //  }
+    //  catch (DbUpdateConcurrencyException)
+    //  {
+    //    return NotFound();
+    //  }
+    //  return Accepted(payment);
+    //}
 
     // POST: api/Payment
     // To protect from overposting attacks, enable the specific properties you want to bind to, for

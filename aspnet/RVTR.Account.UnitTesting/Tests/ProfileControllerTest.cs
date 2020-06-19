@@ -56,7 +56,7 @@ namespace RVTR.Account.UnitTesting.Tests
     [Fact]
     public async void Test_Controller_Get()
     {
-      var resultMany = await _controller.Get();
+      var resultMany = await _controller.Get(null);
       var resultFail = await _controller.Get(0);
       var resultOne = await _controller.Get(1);
 

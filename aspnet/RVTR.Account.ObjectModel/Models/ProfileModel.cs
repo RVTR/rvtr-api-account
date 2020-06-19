@@ -31,5 +31,14 @@ namespace RVTR.Account.ObjectModel.Models
     /// <param name="validationContext"></param>
     /// <returns></returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) => new List<ValidationResult>();
+
+    //public override bool Equals(object obj)
+    //{
+    //  //is obj a ProfileModel
+    //  if (!(obj is ProfileModel))
+    //    return false;
+    //  // check if the IDs are the same
+    //  return this.Id == ((ProfileModel)obj).Id;
+    //}
   }
 }
