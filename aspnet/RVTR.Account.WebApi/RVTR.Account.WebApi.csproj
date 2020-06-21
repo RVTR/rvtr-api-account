@@ -4,7 +4,7 @@
     <DebugType>Full</DebugType>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RestoreLockedMode>false</RestoreLockedMode>
+    <RestoreLockedMode>true</RestoreLockedMode>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>0.3.0</Version>

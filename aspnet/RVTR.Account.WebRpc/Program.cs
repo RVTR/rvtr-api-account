@@ -15,7 +15,5 @@ namespace RVTR.Account.WebRpc
       {
         webBuilder.UseStartup<Startup>();
       });
-
-    protected Program() { }
   }
 }

@@ -51,10 +51,5 @@ namespace RVTR.Account.WebApi
         await context.Database.EnsureCreatedAsync();
       }
     }
-
-    /// <summary>
-    /// Protected Constructor
-    /// </summary>
-    protected Program() { }
   }
 }
