@@ -61,7 +61,7 @@ namespace RVTR.Account.UnitTesting.Tests
 
       var _controller = NewProfileController(mocks);
       var result = await _controller.Delete(0);
-      Assert.IsType<NotFoundObjectResult>(result);
+      Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
