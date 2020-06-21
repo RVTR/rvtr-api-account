@@ -23,8 +23,6 @@ namespace RVTR.Account.ObjectModel.Models
     /// <summary>
     /// Represents the _Account_ `Validate` method
     /// </summary>
-    /// <param name="validationContext"></param>
-    /// <returns></returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) => new List<ValidationResult>();
   }
 }

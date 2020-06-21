@@ -101,7 +101,6 @@ namespace RVTR.Account.UnitTesting.Tests
         var actual = await accounts.Get(1);
 
         Assert.Equal("Lucy Coupling", actual.Name);
-
       }
     }
 

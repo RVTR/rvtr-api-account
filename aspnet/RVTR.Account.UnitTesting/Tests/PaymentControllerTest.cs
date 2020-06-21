@@ -41,6 +41,7 @@ namespace RVTR.Account.UnitTesting.Tests
     {
       return new PaymentController(mocks._logger.Object, mocks._unitOfWork.Object);
     }
+
     [Fact]
     public async void Delete_ById()
     {

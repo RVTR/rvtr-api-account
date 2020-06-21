@@ -31,7 +31,6 @@ namespace RVTR.Account.UnitTesting.Tests
           Assert.NotNull(unitOfWork.AccountRepository);
           Assert.NotNull(unitOfWork.ProfileRepository);
           Assert.NotNull(unitOfWork.PaymentRepository);
-          //Assert.Equal(0, actual);
         }
       }
       finally

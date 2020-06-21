@@ -13,8 +13,9 @@ namespace RVTR.Account.WebApi
   [ExcludeFromCodeCoverage]
   public class Program
   {
+
     /// <summary>
-    ///
+    /// Main Method for RVTR.Account.WebApi
     /// </summary>
     /// <returns></returns>
     public static async Task Main()
@@ -26,7 +27,7 @@ namespace RVTR.Account.WebApi
     }
 
     /// <summary>
-    ///
+    /// IHostBuilder Method
     /// </summary>
     /// <returns></returns>
     public static IHostBuilder CreateHostBuilder() =>
@@ -36,7 +37,7 @@ namespace RVTR.Account.WebApi
       });
 
     /// <summary>
-    ///
+    /// CreateDbContext Method
     /// </summary>
     /// <param name="host"></param>
     /// <returns></returns>
@@ -50,5 +51,10 @@ namespace RVTR.Account.WebApi
         await context.Database.EnsureCreatedAsync();
       }
     }
+
+    /// <summary>
+    /// Protected Constructor
+    /// </summary>
+    protected Program() { }
   }
 }

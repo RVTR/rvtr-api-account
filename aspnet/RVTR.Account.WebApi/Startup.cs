@@ -16,18 +16,18 @@ using zipkin4net.Middleware;
 namespace RVTR.Account.WebApi
 {
   /// <summary>
-  ///
+  /// Startup class
   /// </summary>
   [ExcludeFromCodeCoverage]
   public class Startup
   {
     /// <summary>
-    ///
+    /// _configuration field
     /// </summary>
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    ///
+    /// assigned _configuration
     /// </summary>
     /// <param name="configuration"></param>
     public Startup(IConfiguration configuration)
@@ -36,7 +36,7 @@ namespace RVTR.Account.WebApi
     }
 
     /// <summary>
-    ///
+    /// ConfigureService Method
     /// </summary>
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
@@ -77,7 +77,7 @@ namespace RVTR.Account.WebApi
     }
 
     /// <summary>
-    ///
+    /// Configure Method
     /// </summary>
     /// <param name="descriptionProvider"></param>
     /// <param name="applicationBuilder"></param>

@@ -7,12 +7,13 @@ namespace RVTR.Account.DataContext.Repositories
   public class UnitOfWork : IUnitOfWork
   {
     private readonly AccountContext _context;
-
     public UnitOfWork(AccountContext context)
     {
       _context = context;
     }
-
+    /// <summary>
+    /// Adds AccountRepository to the Unit of Work
+    /// </summary>
     private IRepository<AccountModel> accountRepository;
     public virtual IRepository<AccountModel> AccountRepository
     {
@@ -24,6 +25,9 @@ namespace RVTR.Account.DataContext.Repositories
         return accountRepository;
       }
     }
+    /// <summary>
+    /// Adds PaymentRepository to the Unit of Work
+    /// </summary>
     private IRepository<PaymentModel> paymentRepository;
     public virtual IRepository<PaymentModel> PaymentRepository
     {
@@ -35,7 +39,9 @@ namespace RVTR.Account.DataContext.Repositories
         return paymentRepository;
       }
     }
-
+    /// <summary>
+    /// Adds ProfileRepository to the Unit of Work
+    /// </summary>
     private IRepository<ProfileModel> profileRepository;
     public virtual IRepository<ProfileModel> ProfileRepository
     {
@@ -47,7 +53,9 @@ namespace RVTR.Account.DataContext.Repositories
         return profileRepository;
       }
     }
-
+    /// <summary>
+    /// Complete() method to save any changes made to the database
+    /// </summary>
     public async Task Complete() => await _context.SaveChangesAsync();
     }
   }
