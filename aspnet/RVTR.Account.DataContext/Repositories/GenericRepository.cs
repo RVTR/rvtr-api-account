@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using RVTR.Account.ObjectModel.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RVTR.Account.DataContext.Repositories
@@ -14,7 +12,7 @@ namespace RVTR.Account.DataContext.Repositories
     : IRepository<T> where T : class
   {
     protected AccountContext _context;
-    public GenericRepository(AccountContext context)
+    protected GenericRepository(AccountContext context)
     {
       this._context = context;
     }
