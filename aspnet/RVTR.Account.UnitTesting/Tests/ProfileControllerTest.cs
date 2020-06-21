@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
-using RVTR.Account.ObjectModel.Interface;
+using RVTR.Account.ObjectModel.BusinessL;
 using RVTR.Account.ObjectModel.Models;
 using RVTR.Account.WebApi.Controllers;
 using Xunit;
@@ -16,69 +18,127 @@ namespace RVTR.Account.UnitTesting.Tests
 {
   public class ProfileControllerTest
   {
-    private static readonly SqliteConnection _connection = new SqliteConnection("Data Source=:memory:");
-    private static readonly DbContextOptions<AccountContext> _options = new DbContextOptionsBuilder<AccountContext>().UseSqlite(_connection).Options;
-    private readonly ProfileController _controller;
-    private readonly ILogger<ProfileController> _logger;
-    private readonly UnitOfWork _unitOfWork;
-
-    public ProfileControllerTest()
+    private class Mocks
     {
-      var contextMock = new Mock<AccountContext>(_options);
-      var loggerMock = new Mock<ILogger<ProfileController>>();
-      var repositoryMock = new Mock<IRepository<ProfileModel>>(new AccountContext(_options));
-      var unitOfWorkMock = new Mock<UnitOfWork>(contextMock.Object);
+      public Mock<AccountContext> _accountContext;
+      public Mock<ILogger<ProfileController>> _logger;
+      public Mock<ProfileRepository> _repository;
+      public Mock<UnitOfWork> _unitOfWork;
 
-      repositoryMock.Setup(m => m.Delete(0)).Throws(new Exception());
-      repositoryMock.Setup(m => m.Delete(1)).Returns(Task.FromResult(1));
-      repositoryMock.Setup(m => m.Update(It.IsAny<ProfileModel>())).Returns(Task.FromResult<ProfileModel>(null));
-      repositoryMock.Setup(m => m.GetAll()).Returns(Task.FromResult<IEnumerable<ProfileModel>>(null));
-      repositoryMock.Setup(m => m.Get(0)).Throws(new Exception());
-      repositoryMock.Setup(m => m.Get(1)).Returns(Task.FromResult<ProfileModel>(null));
-      repositoryMock.Setup(m => m.Update(It.IsAny<ProfileModel>()));
-      unitOfWorkMock.Setup(m => m.ProfileRepository).Returns(repositoryMock.Object);
+      public Mocks()
+      {
+        SqliteConnection _connection = new SqliteConnection("Data Source=:memory:");
+        DbContextOptions<AccountContext> _options = new DbContextOptionsBuilder<AccountContext>().UseSqlite(_connection).Options;
 
-      _logger = loggerMock.Object;
-      _unitOfWork = unitOfWorkMock.Object;
-      _controller = new ProfileController(_logger, _unitOfWork);
+        this._accountContext = new Mock<AccountContext>(_options);
+        this._logger = new Mock<ILogger<ProfileController>>();
+        this._repository = new Mock<ProfileRepository>(this._accountContext.Object);
+        this._unitOfWork = new Mock<UnitOfWork>(_accountContext.Object);
+        this._unitOfWork.Setup(m => m.ProfileRepository).Returns(this._repository.Object);
+      }
+    }
+    private ProfileController NewProfileController(Mocks mocks)
+    {
+      return new ProfileController(mocks._logger.Object, mocks._unitOfWork.Object);
     }
 
     [Fact]
-    public async void Test_Controller_Delete()
+    public async void Delete_ById()
     {
-      var resultFail = await _controller.Delete(0);
-      var resultPass = await _controller.Delete(1);
+      var mocks = new Mocks();
+      mocks._repository.Setup(m => m.Delete(1)).Returns(Task.FromResult(new ProfileModel()));
 
-      Assert.NotNull(resultFail);
-      Assert.NotNull(resultPass);
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Delete(1);
+      Assert.IsType<OkResult>(result);
     }
 
     [Fact]
-    public async void Test_Controller_Get()
+    public async void Delete_ByIdError()
     {
-      var resultMany = await _controller.Get(null);
-      var resultFail = await _controller.Get(0);
-      var resultOne = await _controller.Get(1);
+      var mocks = new Mocks();
+      mocks._repository.Setup(m => m.Delete(0)).Throws(new Exception());
 
-      Assert.NotNull(resultMany);
-      Assert.NotNull(resultFail);
-      Assert.NotNull(resultOne);
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Delete(0);
+      Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
-    public async void Test_Controller_Post()
+    public async void Get_ProfileNoAccountIdNoProfileId()
     {
-      var resultPass = await _controller.Post(new ProfileModel());
+      var mocks = new Mocks();
+      IEnumerable<ProfileModel> newProfile = new List<ProfileModel>();
+      mocks._repository.Setup(m => m.GetAll()).Returns(Task.FromResult(newProfile));
 
-      Assert.NotNull(resultPass);
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Get(null,null);
+      Assert.IsType<OkObjectResult>(result);
     }
 
     [Fact]
-    public async void Test_Controller_Put()
+    public async void Get_ProfileYesAccountIdNoProfileId()
     {
-      var resultPass = await _controller.Put(new ProfileModel());
+      var mocks = new Mocks();
+      var accountId = 1;
+      IEnumerable<ProfileModel> newProfile = new List<ProfileModel>() { new ProfileModel() { AccountId = 1 } };
+      mocks._repository.Setup(m => m.Find(p => p.AccountId == accountId)).Returns(Task.FromResult(newProfile));
 
-      Assert.NotNull(resultPass);
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Get(accountId, null);
+      Assert.IsType<OkObjectResult>(result);
     }
+
+    [Fact]
+    public async void Get_ProfileNoAccountIdYesProfileId()
+    {
+      var mocks = new Mocks();
+      int profileId = 1;
+      ProfileModel newProfile = new ProfileModel() { AccountId = 1 };
+      mocks._repository.Setup(m => m.Get(profileId)).Returns(Task.FromResult(newProfile));
+
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Get(null, profileId);
+      Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async void Get_ProfileYesAccountIdYesProfileId()
+    {
+      var mocks = new Mocks();
+      int profileId = 1;
+      int accountId = 1;
+
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Get(accountId, profileId);
+      Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async void Post_ByProfile()
+    {
+      var mocks = new Mocks();
+      var newProfile = new ProfileModel();
+      mocks._repository.Setup(m => m.Add(newProfile)).Returns(Task.FromResult(newProfile));
+
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Post(newProfile);
+      Assert.IsType<AcceptedResult>(result);
+    }
+
+    [Fact]
+    public async void Put_ByProfile()
+    {
+      var mocks = new Mocks();
+      var newProfile = new ProfileModel();
+      mocks._repository.Setup(m => m.Update(newProfile)).Returns(Task.FromResult(newProfile));
+
+      var _controller = NewProfileController(mocks);
+      var result = await _controller.Put(newProfile);
+      Assert.IsType<AcceptedResult>(result);
+    }
+
   }
 }
+
+

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using zipkin4net.Transport.Http;
 
 namespace RVTR.Account.WebApi
 {
+  [ExcludeFromCodeCoverage]
   internal class ClientZipkinMiddleware : IMiddleware
   {
     private readonly IConfiguration _configuration;

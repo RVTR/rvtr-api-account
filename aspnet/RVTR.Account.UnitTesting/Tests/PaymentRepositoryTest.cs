@@ -1,18 +1,30 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
+using RVTR.Account.ObjectModel.Models;
 using Xunit;
 
 namespace RVTR.Account.UnitTesting.Tests
 {
-  public class UnitOfWorkTest
+  public class PaymentRepositoryTest
   {
     private static readonly SqliteConnection _connection = new SqliteConnection("Data Source=:memory:");
     private static readonly DbContextOptions<AccountContext> _options = new DbContextOptionsBuilder<AccountContext>().UseSqlite(_connection).Options;
 
-    [Fact]
-    public async void Test_UnitOfWork_CommitAsync()
+    public static readonly IEnumerable<object[]> _records = new List<object[]>()
+    {
+      new object[]
+      {
+        new PaymentModel() { Id = 1 }
+      }
+    };
+
+    [Theory]
+    [MemberData(nameof(_records))]
+    public async void Test_PaymentRepository_DeleteAsync(PaymentModel payment)
     {
       await _connection.OpenAsync();
 
@@ -21,17 +33,18 @@ namespace RVTR.Account.UnitTesting.Tests
         using (var ctx = new AccountContext(_options))
         {
           await ctx.Database.EnsureCreatedAsync();
+          await ctx.Payments.AddAsync(payment);
+          await ctx.SaveChangesAsync();
         }
 
         using (var ctx = new AccountContext(_options))
         {
-          var unitOfWork = new UnitOfWork(ctx);
-          await unitOfWork.Complete();
+          var payments = new PaymentRepository(ctx);
 
-          Assert.NotNull(unitOfWork.AccountRepository);
-          Assert.NotNull(unitOfWork.ProfileRepository);
-          Assert.NotNull(unitOfWork.PaymentRepository);
-          //Assert.Equal(0, actual);
+          await payments.Delete(1);
+          await ctx.SaveChangesAsync();
+
+          Assert.Empty(await ctx.Payments.ToListAsync());
         }
       }
       finally

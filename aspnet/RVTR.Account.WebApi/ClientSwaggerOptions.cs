@@ -1,6 +1,7 @@
-﻿
+
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -15,6 +16,7 @@ namespace RVTR.Account.WebApi
   /// <summary>
   ///
   /// </summary>
+  [ExcludeFromCodeCoverage]
   public class ClientSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
   {
     private readonly IApiVersionDescriptionProvider _provider;

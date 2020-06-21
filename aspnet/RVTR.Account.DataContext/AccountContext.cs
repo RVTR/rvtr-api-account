@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RVTR.Account.ObjectModel.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace RVTR.Account.DataContext
@@ -16,6 +17,7 @@ namespace RVTR.Account.DataContext
     public AccountContext(DbContextOptions<AccountContext> options) : base(options) { }
 
     public AccountContext() { }
+    [ExcludeFromCodeCoverage]
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
       if (!options.IsConfigured)

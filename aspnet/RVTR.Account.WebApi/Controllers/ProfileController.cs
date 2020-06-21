@@ -57,36 +57,30 @@ namespace RVTR.Account.WebApi.Controllers
     /// 
     /// </summary>
     /// <param name="accountId"></param>
+    /// <param name="profileId"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Get(int? accountId)
+    public async Task<IActionResult> Get(int? accountId, int? profileId)
     {
-      IEnumerable<ProfileModel> profiles;
+      IEnumerable<ProfileModel> profiles = null;
 
-      if (accountId == null)
+      if (accountId == null && profileId == null)
+      {
         profiles = await _unitOfWork.ProfileRepository.GetAll();
-      else
+      }
+      else if (accountId != null && profileId == null)
+      {
         profiles = await _unitOfWork.ProfileRepository.Find(p => p.AccountId == accountId);
-
+      }
+      else if(accountId == null && profileId != null)
+      {
+        return  Ok(await _unitOfWork.ProfileRepository.Get((int)profileId));
+      }
+      else
+      {
+        return NotFound();
+      }
       return Ok(profiles);
-    }
-
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
-    {
-      try
-      {
-        return Ok(await _unitOfWork.ProfileRepository.Get(id));
-      }
-      catch
-      {
-        return NotFound(id);
-      }
     }
 
     /// <summary>
