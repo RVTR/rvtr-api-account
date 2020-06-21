@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
-using RVTR.Account.ObjectModel.BusinessL;
 using RVTR.Account.ObjectModel.Models;
 using RVTR.Account.WebApi.Controllers;
 using Xunit;

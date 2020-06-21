@@ -76,24 +76,27 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
+      AccountModel account;
       try
       {
-        var account = await _unitOfWork.AccountRepository.Get(id);
+        account = await _unitOfWork.AccountRepository.Get(id);
         if (account != null)
         {
           foreach (var payment in account.Payments)
           {
             payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
           }
-
-          return Ok(new List<AccountModel> { account });
         }
-        throw new Exception();
+        else
+        {
+          return NotFound();
+        }
       }
       catch
       {
         return NotFound();
       }
+      return Ok(new List<AccountModel> { account });
     }
     /// <summary>
     /// Post account by AccountModel object

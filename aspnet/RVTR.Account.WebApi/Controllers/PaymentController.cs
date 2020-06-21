@@ -62,7 +62,7 @@ namespace RVTR.Account.WebApi.Controllers
         if (accountId == null)
         {
           payments = await _unitOfWork.PaymentRepository.GetAll();
-          if (payments.Count() == 0)
+          if (!payments.Any())
           {
             return NotFound();
           }
@@ -71,7 +71,7 @@ namespace RVTR.Account.WebApi.Controllers
         {
           payments = await _unitOfWork.PaymentRepository.Find(p => p.AccountId == accountId);
         }
-        if (payments.Count() > 0)
+        if (payments.Any())
         {
           foreach (var payment in payments)
           {

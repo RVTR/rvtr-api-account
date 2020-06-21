@@ -18,11 +18,11 @@ namespace RVTR.Account.DataContext
 
     public AccountContext() { }
     [ExcludeFromCodeCoverage]
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      if (!options.IsConfigured)
+      if (!optionsBuilder.IsConfigured)
       {
-        options.UseNpgsql("Host=localhost;Database=AccountDb;Username=postgres;Password=abc123");
+        optionsBuilder.UseNpgsql("Host=localhost;Database=AccountDb;Username=postgres;Password=abc123");
       }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
