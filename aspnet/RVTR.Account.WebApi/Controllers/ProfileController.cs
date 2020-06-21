@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
@@ -87,7 +86,7 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPost]
     public async Task<IActionResult> Post(ProfileModel profile)
     {
-      await _unitOfWork.ProfileRepository.Update(profile);
+      await _unitOfWork.ProfileRepository.Add(profile);
       await _unitOfWork.Complete();
 
       return Accepted(profile);
