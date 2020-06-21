@@ -46,6 +46,7 @@ namespace RVTR.Account.WebApi.Controllers
       }
       catch
       {
+        _logger.LogError("Issues deleting payment");
         return NotFound();
       }
     }

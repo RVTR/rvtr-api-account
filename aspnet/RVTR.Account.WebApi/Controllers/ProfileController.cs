@@ -45,6 +45,7 @@ namespace RVTR.Account.WebApi.Controllers
       }
       catch
       {
+        _logger.LogError("Issues deleting profile");
         return NotFound();
       }
     }
