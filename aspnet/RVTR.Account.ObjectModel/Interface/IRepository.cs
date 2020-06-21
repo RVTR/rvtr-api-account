@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RVTR.Account.ObjectModel.Interface
 {
+  /// <summary>
+  /// Methods that needs to be defined in the Repository Class
+  /// </summary>
   public interface IRepository<TEntity>
   {
     Task<TEntity> Add(TEntity entity);

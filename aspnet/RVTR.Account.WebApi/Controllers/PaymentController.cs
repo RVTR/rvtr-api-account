@@ -11,7 +11,7 @@ using RVTR.Account.ObjectModel.Models;
 namespace RVTR.Account.WebApi.Controllers
 {
   /// <summary>
-  /// 
+  /// Entry point for any request to payment controller 
   /// </summary>
   [ApiController]
   [ApiVersion("0.0")]
@@ -22,21 +22,18 @@ namespace RVTR.Account.WebApi.Controllers
     private readonly ILogger<PaymentController> _logger;
     private readonly IUnitOfWork _unitOfWork;
     /// <summary>
-    /// 
+    /// DI of logger/unitOfWork
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="unitOfWork"></param>
     public PaymentController(ILogger<PaymentController> logger, IUnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
     }
     /// <summary>
-    /// 
+    /// Delete payment by PaymentId
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    // DELETE: api/Payment/5
+    /// <param name="id">PaymentId</param>
+    /// <returns>200 OK / 404 Not Found</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -49,15 +46,17 @@ namespace RVTR.Account.WebApi.Controllers
       }
       catch
       {
-        return NotFound(id);
+        return NotFound();
       }
     }
-
-    // GET: api/Payment
+    /// <summary>
+    /// Get all payments / get all payments by AccountId
+    /// </summary>
+    /// <param name="accountId">AccountId</param>
+    /// <returns>200 OK with IEnumerable(Payments) / 404 Not Found</returns>
     [HttpGet]
     public async Task<IActionResult> Get(int? accountId)
     {
-
         IEnumerable<PaymentModel> payments;
         if (accountId == null)
         {
@@ -79,51 +78,12 @@ namespace RVTR.Account.WebApi.Controllers
           }
         }
         return Ok(payments);
-
     }
-
-    // GET: api/Payment/5
-/*    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
-    {
-      try
-      {
-        var payment = await _unitOfWork.PaymentRepository.Get(id);
-
-        if (payment == null)
-          return NotFound(id);
-
-        payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
-        return Ok(payment);
-      }
-      catch
-      {
-        return NotFound(id);
-      }
-    }*/
-
-    // PUT: api/Payment/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-    //[HttpPut]
-    //public async Task<IActionResult> Put(PaymentModel payment)
-    //{
-    //  await _unitOfWork.PaymentRepository.Update(payment);
-
-    //  try
-    //  {
-    //    await _unitOfWork.Complete();
-    //  }
-    //  catch (DbUpdateConcurrencyException)
-    //  {
-    //    return NotFound();
-    //  }
-    //  return Accepted(payment);
-    //}
-
-    // POST: api/Payment
-    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+    /// <summary>
+    /// Post payment by PaymentModel object
+    /// </summary>
+    /// <param name="payment">PaymentModel object</param>
+    /// <returns>202 Accepted with posted payment</returns>
     [HttpPost]
     public async Task<IActionResult> Post(PaymentModel payment)
     {

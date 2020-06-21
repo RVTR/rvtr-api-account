@@ -10,7 +10,7 @@ using RVTR.Account.ObjectModel.Models;
 namespace RVTR.Account.WebApi.Controllers
 {
   /// <summary>
-  ///
+  /// Entry point for any request to profile controller
   /// </summary>
   [ApiController]
   [ApiVersion("0.0")]
@@ -20,23 +20,19 @@ namespace RVTR.Account.WebApi.Controllers
   {
     private readonly ILogger<ProfileController> _logger;
     private readonly IUnitOfWork _unitOfWork;
-
     /// <summary>
-    ///
+    /// DI of logger/unitOfWork
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="unitOfWork"></param>
     public ProfileController(ILogger<ProfileController> logger, IUnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
     }
-
     /// <summary>
-    ///
+    /// Delete profile by ProfileId
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <param name="id">ProfileId</param>
+    /// <returns>200 OK / 404 Not Found</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -49,16 +45,15 @@ namespace RVTR.Account.WebApi.Controllers
       }
       catch
       {
-        return NotFound(id);
+        return NotFound();
       }
     }
-
     /// <summary>
-    /// 
+    /// Get all profiles / Get all profiles with AccountId / Get profile with ProfileId
     /// </summary>
-    /// <param name="accountId"></param>
-    /// <param name="profileId"></param>
-    /// <returns></returns>
+    /// <param name="accountId">AccountId</param>
+    /// <param name="profileId">ProfileId</param>
+    /// <returns>200 OK with IEnumerable(ProfileModel) / 404 Not Found</returns>
     [HttpGet]
     public async Task<IActionResult> Get(int? accountId, int? profileId)
     {
@@ -84,10 +79,10 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    ///
+    /// Post profile by ProfileModel object
     /// </summary>
-    /// <param name="profile"></param>
-    /// <returns></returns>
+    /// <param name="profile">ProfileModel object</param>
+    /// <returns>202 Accepted with posted profile</returns>
     [HttpPost]
     public async Task<IActionResult> Post(ProfileModel profile)
     {
@@ -98,10 +93,10 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    ///
+    /// Put profile by ProfileModel object
     /// </summary>
-    /// <param name="profile"></param>
-    /// <returns></returns>
+    /// <param name="profile">ProfileModel object</param>
+    /// <returns>202 Accepted with updated profile</returns>
     [HttpPut]
     public async Task<IActionResult> Put(ProfileModel profile)
     {

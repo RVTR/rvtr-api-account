@@ -99,7 +99,6 @@ namespace RVTR.Account.UnitTesting.Tests
       Assert.IsType<NotFoundObjectResult>(result);
     }
 
-
     [Fact]
     public async void Get_ByIdError()
     {

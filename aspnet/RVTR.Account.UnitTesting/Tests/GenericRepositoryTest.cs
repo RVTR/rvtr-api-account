@@ -11,6 +11,7 @@ namespace RVTR.Account.UnitTesting.Tests
 {
   public class GenericRepositoryTest
   {
+
     [Fact]
     public async void Test_GenericRepository_Find()
     {
@@ -39,6 +40,7 @@ namespace RVTR.Account.UnitTesting.Tests
         Assert.Equal("1234567897", phone);
       }
     }
+
     [Fact]
     public async void Test_GenericRepository_Update()
     {
@@ -83,7 +85,5 @@ namespace RVTR.Account.UnitTesting.Tests
         Assert.Empty(payments);
       }
     }
-
-
   }
 }

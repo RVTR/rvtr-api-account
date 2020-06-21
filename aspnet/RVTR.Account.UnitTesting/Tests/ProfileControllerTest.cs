@@ -137,7 +137,6 @@ namespace RVTR.Account.UnitTesting.Tests
       var result = await _controller.Put(newProfile);
       Assert.IsType<AcceptedResult>(result);
     }
-
   }
 }
 

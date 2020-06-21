@@ -106,7 +106,6 @@ namespace RVTR.Account.UnitTesting.Tests
         var actual = await profiles.Get(10);
 
         Assert.Equal(10, actual.Id);
-
       }
     }
   }

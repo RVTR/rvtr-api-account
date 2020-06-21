@@ -12,7 +12,7 @@ using RVTR.Account.ObjectModel.Models;
 namespace RVTR.Account.WebApi.Controllers
 {
   /// <summary>
-  ///
+  /// Entry point for any request to account controller
   /// </summary>
   [ApiController]
   [ApiVersion("0.0")]
@@ -22,23 +22,19 @@ namespace RVTR.Account.WebApi.Controllers
   {
     private readonly ILogger<AccountController> _logger;
     private readonly IUnitOfWork _unitOfWork;
-
     /// <summary>
-    ///
+    /// DI of logger/unitOfWork
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="unitOfWork"></param>
     public AccountController(ILogger<AccountController> logger, IUnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
     }
-
     /// <summary>
-    ///
+    /// Delete account by AccountId
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <param name="id">AccountId</param>
+    /// <returns>200 OK / 404 Not Found</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -51,14 +47,13 @@ namespace RVTR.Account.WebApi.Controllers
       }
       catch
       {
-        return NotFound(id);
+        return NotFound();
       }
     }
-
     /// <summary>
-    ///
+    /// Get all accounts
     /// </summary>
-    /// <returns></returns>
+    /// <returns>200 OK with IEnumerable(AccountModel)</returns>
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -72,12 +67,11 @@ namespace RVTR.Account.WebApi.Controllers
       }
       return Ok(accounts);
     }
-
     /// <summary>
-    ///
+    /// Get account by AccountId
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <param name="id">AccountId</param>
+    /// <returns>200 OK with List(AccountModel) / 404 Not Found</returns>
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
@@ -97,15 +91,14 @@ namespace RVTR.Account.WebApi.Controllers
       }
       catch
       {
-        return NotFound(id);
+        return NotFound();
       }
     }
-
     /// <summary>
-    ///
+    /// Post account by AccountModel object
     /// </summary>
-    /// <param name="account"></param>
-    /// <returns></returns>
+    /// <param name="account">AccountModel object</param>
+    /// <returns>202 Accepted with posted account</returns>
     [HttpPost]
     public async Task<IActionResult> Post(AccountModel account)
     {
@@ -116,73 +109,17 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    ///
+    /// Put account by AccountModel object
     /// </summary>
-    /// <param name="account"></param>
-    /// <returns></returns>
+    /// <param name="account">AccountModel object</param>
+    /// <returns>202 Accepted with updated account</returns>
     [HttpPut]
     public async Task<IActionResult> Put(AccountModel account)
     {
       await _unitOfWork.AccountRepository.Update(account);
       await _unitOfWork.Complete();
+
       return Accepted(account);
     }
-
-/*    private async Task UpdateAccount(AccountModel account)
-    {
-      //Compare profiles
-      await UpdateProfiles(account.Profiles, account.Id);
-
-      //Compare payments
-      await UpdatePayments(account.Payments, account.Id);
-      await _unitOfWork.AccountRepository.Update(account);
-      await _unitOfWork.Complete();
-    }
-    private async Task UpdateProfiles(IEnumerable<ProfileModel> profiles, int accountId)
-    {
-      //var profileComparer = new ProfileComparer();
-      var dbProfiles = await _unitOfWork.ProfileRepository.Find(p => p.AccountId == accountId);
-
-      foreach (var profile in dbProfiles)
-      {
-        //if the new list does not contain this item, remove it from the db
-        if (!profiles.Contains(profile, profileComparer))
-        {
-          await _unitOfWork.ProfileRepository.Delete(profile.Id);
-        }
-      }
-
-      foreach (var profile in profiles)
-      {
-        //if the db list does not contain this item, add it to the db
-        if (!dbProfiles.Contains(profile, profileComparer))
-        {
-          await _unitOfWork.ProfileRepository.Add(profile);
-        }
-      }
-    }
-    private async Task UpdatePayments(IEnumerable<PaymentModel> payments, int accountId)
-    {
-      //var paymentComparer = new PaymentComparer();
-      var dbPayments = await _unitOfWork.PaymentRepository.Find(p => p.AccountId == accountId);
-
-      foreach (var payment in dbPayments)
-      {
-        //if the new list does not contain this item, remove it from the db
-        if (!payments.Contains(payment, paymentComparer))
-        {
-          await _unitOfWork.PaymentRepository.Delete(payment.Id);
-        }
-      }
-
-      foreach (var payment in payments)
-      {
-        //if the db list does not contain this item, add it to the db
-        if (!dbPayments.Contains(payment, paymentComparer))
-        {
-          await _unitOfWork.PaymentRepository.Add(payment);
-        }
-      }
-    }
-*/  }
+  }
 }

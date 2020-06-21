@@ -31,14 +31,6 @@ namespace RVTR.Account.DataContext
       {
         foreignKey.DeleteBehavior = DeleteBehavior.Cascade;
       }
-/*      modelBuilder.Entity<AccountModel>().HasKey(e => e.Id);
-      modelBuilder.Entity<AddressModel>().HasKey(e => e.Id);
-      modelBuilder.Entity<BankCardModel>().HasKey(e => e.Id);
-      modelBuilder.Entity<NameModel>().HasKey(e => e.Id);
-      modelBuilder.Entity<PaymentModel>().HasKey(e => e.Id);
-      modelBuilder.Entity<ProfileModel>().HasMany(e => e.Name)
-    .WithOne(e => e.)
-    .OnDelete(DeleteBehavior.ClientCascade); ;
-*/    }
+    }
   }
 }
