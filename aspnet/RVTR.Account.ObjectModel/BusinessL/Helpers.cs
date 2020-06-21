@@ -10,10 +10,9 @@ namespace RVTR.Account.ObjectModel.BusinessL
 
     public static string ObscureCreditCardNum(string ccNum)
     {
-      if (ccNum.Length != 16)
-        return ccNum;
-
-      return $"***********${ccNum.Substring(11, 16)}";
+      int left = ccNum.Length - 4;
+      string sub = ccNum.Substring(left, 4);
+      return $"************{sub}";
     }
   }
 }

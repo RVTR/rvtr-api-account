@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
+using RVTR.Account.ObjectModel.BusinessL;
 using RVTR.Account.ObjectModel.Models;
 using RVTR.Account.WebApi.Controllers;
 using Xunit;
@@ -15,69 +17,124 @@ namespace RVTR.Account.UnitTesting.Tests
 {
   public class AccountControllerTest
   {
-    private static readonly SqliteConnection _connection = new SqliteConnection("Data Source=:memory:");
-    private static readonly DbContextOptions<AccountContext> _options = new DbContextOptionsBuilder<AccountContext>().UseSqlite(_connection).Options;
-    private readonly AccountController _controller;
-    private readonly ILogger<AccountController> _logger;
-    private readonly UnitOfWork _unitOfWork;
-
-    public AccountControllerTest()
+    private class Mocks
     {
-      var contextMock = new Mock<AccountContext>(_options);
-      var loggerMock = new Mock<ILogger<AccountController>>();
-      var repositoryMock = new Mock<AccountRepository>(new AccountContext(_options));
-      var unitOfWorkMock = new Mock<UnitOfWork>(contextMock.Object);
+      public Mock<AccountContext> _accountContext;
+      public Mock<ILogger<AccountController>> _logger;
+      public Mock<AccountRepository> _repository;
+      public Mock<UnitOfWork> _unitOfWork;
 
-      repositoryMock.Setup(m => m.Delete(0)).Throws(new Exception());
-      repositoryMock.Setup(m => m.Delete(1)).Returns(Task.FromResult(1));
-      repositoryMock.Setup(m => m.Update(It.IsAny<AccountModel>())).Returns(Task.FromResult<AccountModel>(null));
-      repositoryMock.Setup(m => m.GetAll()).Returns(Task.FromResult<IEnumerable<AccountModel>>(null));
-      repositoryMock.Setup(m => m.Get(0)).Throws(new Exception());
-      repositoryMock.Setup(m => m.Get(1)).Returns(Task.FromResult<AccountModel>(null));
-      repositoryMock.Setup(m => m.Update(It.IsAny<AccountModel>()));
-      unitOfWorkMock.Setup(m => m.AccountRepository).Returns(repositoryMock.Object);
+      public Mocks()
+      {
+        SqliteConnection _connection = new SqliteConnection("Data Source=:memory:");
+        DbContextOptions<AccountContext> _options = new DbContextOptionsBuilder<AccountContext>().UseSqlite(_connection).Options;
 
-      _logger = loggerMock.Object;
-      _unitOfWork = unitOfWorkMock.Object;
-      _controller = new AccountController(_logger, _unitOfWork);
+        this._accountContext = new Mock<AccountContext>(_options);
+        this._logger = new Mock<ILogger<AccountController>>();
+        this._repository = new Mock<AccountRepository>(this._accountContext.Object);
+        this._unitOfWork = new Mock<UnitOfWork>(_accountContext.Object);
+        this._unitOfWork.Setup(m => m.AccountRepository).Returns(this._repository.Object);
+      }
+    }
+    private AccountController NewAccountController(Mocks mocks)
+    {
+      return new AccountController(mocks._logger.Object, mocks._unitOfWork.Object);
     }
 
     [Fact]
-    public async void Test_Controller_Delete()
+    public async void Delete_ById()
     {
-      var resultFail = await _controller.Delete(0);
-      var resultPass = await _controller.Delete(1);
+      var mocks = new Mocks();
+      mocks._repository.Setup(m => m.Delete(1)).Returns(Task.FromResult(new AccountModel()));
 
-      Assert.NotNull(resultFail);
-      Assert.NotNull(resultPass);
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Delete(1);
+      Assert.IsType<OkResult>(result);
     }
 
     [Fact]
-    public async void Test_Controller_Get()
+    public async void Delete_ByIdError()
     {
-      var resultMany = await _controller.Get();
-      var resultFail = await _controller.Get(0);
-      var resultOne = await _controller.Get(1);
+      var mocks = new Mocks();
+      mocks._repository.Setup(m => m.Delete(0)).Throws(new Exception());
 
-      Assert.NotNull(resultMany);
-      Assert.NotNull(resultFail);
-      Assert.NotNull(resultOne);
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Delete(0);
+      Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
-    public async void Test_Controller_Post()
+    public async void Get_All()
     {
-      var resultPass = await _controller.Post(new AccountModel());
+      var mocks = new Mocks();
+      IEnumerable<AccountModel> newAccount = new List<AccountModel>() { new AccountModel() { Payments = new List<PaymentModel>() { new PaymentModel() { CardNumber = "1234567891234567" } } } };
+      mocks._repository.Setup(m => m.GetAll()).Returns(Task.FromResult(newAccount));
 
-      Assert.NotNull(resultPass);
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Get();
+      Assert.IsType<OkObjectResult>(result);
     }
 
     [Fact]
-    public async void Test_Controller_Put()
+    public async void Get_ById()
     {
-      var resultPass = await _controller.Put(new AccountModel());
+      var mocks = new Mocks();
+      AccountModel newAccount = new AccountModel() { Payments = new List<PaymentModel>() { new PaymentModel() { CardNumber = "1234567891234567" } } };
+      mocks._repository.Setup(m => m.Get(1)).Returns(Task.FromResult(newAccount));
 
-      Assert.NotNull(resultPass);
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Get(1);
+      Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async void Get_ByIdNullError()
+    {
+      var mocks = new Mocks();
+      AccountModel newAccount = null;
+      mocks._repository.Setup(m => m.Get(1)).Returns(Task.FromResult(newAccount));
+
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Get(1);
+      Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+
+    [Fact]
+    public async void Get_ByIdError()
+    {
+      var mocks = new Mocks();
+      mocks._repository.Setup(m => m.Get(1)).Returns(Task.FromResult(new AccountModel()));
+
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Get(1);
+      Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async void Post_ByAccount()
+    {
+      var mocks = new Mocks();
+      var newAccount = new AccountModel();
+      mocks._repository.Setup(m => m.Add(newAccount)).Returns(Task.FromResult(newAccount));
+
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Post(newAccount);
+      Assert.IsType<AcceptedResult>(result);
+    }
+
+    [Fact]
+    public async void Put_ByAccount()
+    {
+      var mocks = new Mocks();
+      var newAccount = new AccountModel();
+      mocks._repository.Setup(m => m.Update(newAccount)).Returns(Task.FromResult(newAccount));
+
+      var _controller = NewAccountController(mocks);
+      var result = await _controller.Put(newAccount);
+      Assert.IsType<AcceptedResult>(result);
     }
   }
 }
+
+

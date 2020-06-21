@@ -1,10 +1,12 @@
-﻿using System;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace RVTR.Account.DataContext.Migrations
 {
-    public partial class InitialCreate : Migration
+  [ExcludeFromCodeCoverage]
+  public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

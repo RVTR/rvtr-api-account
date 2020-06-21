@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ namespace RVTR.Account.WebApi
   /// <summary>
   ///
   /// </summary>
+  [ExcludeFromCodeCoverage]
   public class Program
   {
     /// <summary>

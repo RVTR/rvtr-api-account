@@ -14,7 +14,7 @@ namespace RVTR.Account.DataContext.Repositories
     }
 
     private IRepository<AccountModel> accountRepository;
-    public IRepository<AccountModel> AccountRepository
+    public virtual IRepository<AccountModel> AccountRepository
     {
       get
       {
@@ -25,7 +25,7 @@ namespace RVTR.Account.DataContext.Repositories
       }
     }
     private IRepository<PaymentModel> paymentRepository;
-    public IRepository<PaymentModel> PaymentRepository
+    public virtual IRepository<PaymentModel> PaymentRepository
     {
       get
       {
@@ -37,7 +37,7 @@ namespace RVTR.Account.DataContext.Repositories
     }
 
     private IRepository<ProfileModel> profileRepository;
-    public IRepository<ProfileModel> ProfileRepository
+    public virtual IRepository<ProfileModel> ProfileRepository
     {
       get
       {

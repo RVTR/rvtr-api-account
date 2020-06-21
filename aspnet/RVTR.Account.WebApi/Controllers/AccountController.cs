@@ -1,15 +1,13 @@
+using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RVTR.Account.DataContext.Repositories;
 using RVTR.Account.ObjectModel.BusinessL;
 using RVTR.Account.ObjectModel.Interface;
 using RVTR.Account.ObjectModel.Models;
-using SQLitePCL;
+
 
 namespace RVTR.Account.WebApi.Controllers
 {
@@ -86,12 +84,16 @@ namespace RVTR.Account.WebApi.Controllers
       try
       {
         var account = await _unitOfWork.AccountRepository.Get(id);
-        foreach (var payment in account.Payments)
+        if (account != null)
         {
-          payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
-        }
+          foreach (var payment in account.Payments)
+          {
+            payment.CardNumber = Helpers.ObscureCreditCardNum(payment.CardNumber);
+          }
 
-        return Ok(new List<AccountModel> { account });
+          return Ok(new List<AccountModel> { account });
+        }
+        throw new Exception();
       }
       catch
       {
@@ -121,27 +123,25 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     public async Task<IActionResult> Put(AccountModel account)
     {
-      await UpdateAccount(account);
-
+      await _unitOfWork.AccountRepository.Update(account);
+      await _unitOfWork.Complete();
       return Accepted(account);
     }
 
-    private async Task UpdateAccount(AccountModel account)
+/*    private async Task UpdateAccount(AccountModel account)
     {
       //Compare profiles
       await UpdateProfiles(account.Profiles, account.Id);
 
       //Compare payments
       await UpdatePayments(account.Payments, account.Id);
-
-      
       await _unitOfWork.AccountRepository.Update(account);
       await _unitOfWork.Complete();
     }
     private async Task UpdateProfiles(IEnumerable<ProfileModel> profiles, int accountId)
     {
-      var profileComparer = new ProfileComparer();
-      var dbProfiles =  await _unitOfWork.ProfileRepository.Find(p => p.AccountId == accountId);
+      //var profileComparer = new ProfileComparer();
+      var dbProfiles = await _unitOfWork.ProfileRepository.Find(p => p.AccountId == accountId);
 
       foreach (var profile in dbProfiles)
       {
@@ -163,8 +163,8 @@ namespace RVTR.Account.WebApi.Controllers
     }
     private async Task UpdatePayments(IEnumerable<PaymentModel> payments, int accountId)
     {
-      var paymentComparer = new PaymentComparer();
-      var dbPayments =  await _unitOfWork.PaymentRepository.Find(p => p.AccountId == accountId);
+      //var paymentComparer = new PaymentComparer();
+      var dbPayments = await _unitOfWork.PaymentRepository.Find(p => p.AccountId == accountId);
 
       foreach (var payment in dbPayments)
       {
@@ -184,5 +184,5 @@ namespace RVTR.Account.WebApi.Controllers
         }
       }
     }
-  }
+*/  }
 }

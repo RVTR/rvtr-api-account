@@ -18,6 +18,8 @@ namespace RVTR.Account.UnitTesting.Tests
           CardExpirationDate=DateTime.Now,
           CardNumber="123456789132456",
           CardName = "name",
+          AccountId = 1,
+          Account = null
           
         }
       }

@@ -10,6 +10,7 @@ using RVTR.Account.DataContext;
 using RVTR.Account.DataContext.Repositories;
 using RVTR.Account.ObjectModel.Interface;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Diagnostics.CodeAnalysis;
 using zipkin4net.Middleware;
 
 namespace RVTR.Account.WebApi
@@ -17,6 +18,7 @@ namespace RVTR.Account.WebApi
   /// <summary>
   ///
   /// </summary>
+  [ExcludeFromCodeCoverage]
   public class Startup
   {
     /// <summary>
