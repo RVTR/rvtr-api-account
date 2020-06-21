@@ -60,7 +60,7 @@ namespace RVTR.Account.UnitTesting.Tests
 
       var _controller = NewAccountController(mocks);
       var result = await _controller.Delete(0);
-      Assert.IsType<NotFoundObjectResult>(result);
+      Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ namespace RVTR.Account.UnitTesting.Tests
 
       var _controller = NewAccountController(mocks);
       var result = await _controller.Get(1);
-      Assert.IsType<NotFoundObjectResult>(result);
+      Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ namespace RVTR.Account.UnitTesting.Tests
 
       var _controller = NewAccountController(mocks);
       var result = await _controller.Get(1);
-      Assert.IsType<NotFoundObjectResult>(result);
+      Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
