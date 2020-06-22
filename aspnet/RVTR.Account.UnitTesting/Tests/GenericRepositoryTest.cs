@@ -77,10 +77,12 @@ namespace RVTR.Account.UnitTesting.Tests
         await ctx.SaveChangesAsync();
         var actual = await profiles.GetAll();
         var payments = await payment.GetAll();
+        var payments2 = await payment.Find(payment => payment.AccountId == 1);
         var phone = actual.First().Phone;
 
         Assert.Equal("2222222222", phone);
         Assert.Empty(payments);
+        Assert.Empty(payments2);
       }
     }
   }

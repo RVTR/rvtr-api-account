@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using RVTR.Account.ObjectModel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace RVTR.Account.DataContext.Repositories
@@ -35,6 +37,20 @@ namespace RVTR.Account.DataContext.Repositories
         .Where(x => x.Id == id)
         .FirstOrDefaultAsync();
     }
+    /// <summary>
+    /// Profile repository overriding generic repository's Find() method,
+    /// retrieves profile info including name
+    /// </summary>
+    /// <param name="predicate">Predicate</param>
+    /// <returns>Returns IEnumerable(ProfileModel) with name included</returns>
+    public override async Task<IEnumerable<ProfileModel>> Find(Expression<Func<ProfileModel, bool>> predicate)
+    {
+      return await _context.Profiles
+        .Include(x => x.Name)
+        .Where(predicate)
+        .ToListAsync();
+    }
+
     /// <summary>
     /// Profile Delete() method to remove a profile from the database (delete cascades)
     /// </summary>
