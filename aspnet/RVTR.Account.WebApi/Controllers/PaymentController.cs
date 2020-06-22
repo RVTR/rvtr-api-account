@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,10 +45,10 @@ namespace RVTR.Account.WebApi.Controllers
 
         return Ok();
       }
-      catch
+      catch(ArgumentNullException e)
       {
         _logger.LogError("Issues deleting payment");
-        return NotFound();
+        return NotFound(e);
       }
     }
     /// <summary>

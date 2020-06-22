@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
@@ -44,10 +45,10 @@ namespace RVTR.Account.WebApi.Controllers
 
         return Ok();
       }
-      catch
+      catch(ArgumentNullException e)
       {
         _logger.LogError("Issues deleting account");
-        return NotFound();
+        return NotFound(e);
       }
     }
     /// <summary>

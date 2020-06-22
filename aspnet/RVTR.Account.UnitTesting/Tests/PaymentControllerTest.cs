@@ -55,11 +55,11 @@ namespace RVTR.Account.UnitTesting.Tests
     public async void Delete_ByIdError()
     {
       var mocks = new Mocks();
-      mocks._repository.Setup(m => m.Delete(0)).Throws(new Exception());
+      mocks._repository.Setup(m => m.Delete(0)).Throws(new ArgumentNullException());
 
       var _controller = NewPaymentController(mocks);
       var result = await _controller.Delete(0);
-      Assert.IsType<NotFoundResult>(result);
+      Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]

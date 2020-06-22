@@ -8,7 +8,7 @@ using RVTR.Account.DataContext;
 namespace RVTR.Account.WebApi
 {
   /// <summary>
-  ///
+  /// WebApid program class
   /// </summary>
   [ExcludeFromCodeCoverage]
   public class Program
