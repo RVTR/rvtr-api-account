@@ -21,6 +21,7 @@ namespace RVTR.Account.DataContext
       await ctx.Accounts.AddAsync(new AccountModel
       {
         Id = -1,
+        Email = "Test@test.com",
         Address = new AddressModel()
         {
           Id = -1,

@@ -25,6 +25,7 @@ namespace RVTR.Account.DataContext
       (
         new AccountModel(){
           Id = 1,
+          Email = "demo.camper@revature.com",
           Name = "camper"
         }
       );

@@ -79,32 +79,32 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    /// Get a user's account by account ID number
+    /// Get a user's account by email address
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{email}")]
     [ProducesResponseType(typeof(AccountModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(string email)
     {
       AccountModel accountModel;
 
-      _logger.LogDebug("Getting an account by its ID number...");
+      _logger.LogDebug("Getting an account by its email address...");
 
-      accountModel = await _unitOfWork.Account.SelectAsync(id);
+      accountModel = await _unitOfWork.Account.SelectAsync(email);
 
 
       if (accountModel is AccountModel theAccount)
       {
-        _logger.LogInformation($"Retrieved the account with ID: {id}.");
+        _logger.LogInformation($"Retrieved the account with email address: {email}.");
 
         return Ok(theAccount);
       }
 
-      _logger.LogWarning($"Account with ID number {id} does not exist.");
+      _logger.LogWarning($"Account with email address {email} does not exist.");
 
-      return NotFound(new ErrorObject($"Account with ID number {id} does not exist."));
+      return NotFound(new ErrorObject($"Account with email address {email} does not exist."));
     }
 
     /// <summary>

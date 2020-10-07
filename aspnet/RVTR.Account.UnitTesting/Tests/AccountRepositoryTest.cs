@@ -58,7 +58,7 @@ namespace RVTR.Account.UnitTesting.Tests
         {
           var lodgings = new AccountRepository(ctx);
 
-          var actual = await lodgings.SelectAsync(1);
+          var actual = await lodgings.SelectAsync("demo.camper@revature.com");
 
           Assert.NotNull(actual);
         }
