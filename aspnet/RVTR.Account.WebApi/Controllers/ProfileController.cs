@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -115,12 +117,24 @@ namespace RVTR.Account.WebApi.Controllers
     {
       _logger.LogDebug("Adding a profile...");
 
-      await _unitOfWork.Profile.InsertAsync(profile);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if there are any items in the validation list
+      //Throws a NoContent response since the address isn't valid
+      var validationResults = profile.Validate(new ValidationContext(profile));
+      if (validationResults != null || validationResults.Count() > 0)
+      {
+        _logger.LogInformation($"Invalid profile '{profile}'.");
+        return BadRequest(profile);
+      }
+      else
+      {
 
-      _logger.LogInformation($"Successfully added the profile {profile}.");
+        await _unitOfWork.Profile.InsertAsync(profile);
+        await _unitOfWork.CommitAsync();
 
-      return Accepted(profile);
+        _logger.LogInformation($"Successfully added the profile {profile}.");
+
+        return Accepted(profile);
+      }
     }
 
     /// <summary>
@@ -137,12 +151,24 @@ namespace RVTR.Account.WebApi.Controllers
       {
         _logger.LogDebug("Updating a profile...");
 
-        _unitOfWork.Profile.Update(profile);
-        await _unitOfWork.CommitAsync();
+        //Checks to see if there are any items in the validation list
+        //Throws a NoContent response since the address isn't valid
+        var validationResults = profile.Validate(new ValidationContext(profile));
+        if (validationResults != null || validationResults.Count() > 0)
+        {
+          _logger.LogInformation($"Invalid profile '{profile}'.");
+          return BadRequest(profile);
+        }
+        else
+        {
 
-        _logger.LogInformation($"Successfully updated the profile {profile}.");
+          _unitOfWork.Profile.Update(profile);
+          await _unitOfWork.CommitAsync();
 
-        return Accepted(profile);
+          _logger.LogInformation($"Successfully updated the profile {profile}.");
+
+          return Accepted(profile);
+        }
       }
       catch
       {
