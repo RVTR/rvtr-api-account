@@ -14,6 +14,8 @@ namespace RVTR.Account.ObjectModel.Models
 
     public string Name { get; set; }
 
+    public string Email { get; set; } // Added Email attribute to Account object
+
     public IEnumerable<PaymentModel> Payments { get; set; }
 
     public IEnumerable<ProfileModel> Profiles { get; set; }
