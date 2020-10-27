@@ -34,33 +34,35 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    /// Delete a user's account
+    /// Delete a user's account via email
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string email)
     {
       try
       {
+        // Instead of directly deleting by passed ID, search for account (& it's ID) from passed email first
+        AccountModel accountModel = await _unitOfWork.Account.SelectByEmailAsync(email);
 
-        _logger.LogDebug("Deleting an account by its ID number...");
+        _logger.LogDebug("Deleting an account by its email...");
 
-        await _unitOfWork.Account.DeleteAsync(id);
+        await _unitOfWork.Account.DeleteAsync(accountModel.Id);
         await _unitOfWork.CommitAsync();
 
 
-        _logger.LogInformation($"Deleted the account with ID number {id}.");
+        _logger.LogInformation($"Deleted the account with email {email}, ID number {accountModel.Id}.");
 
         return Ok(MessageObject.Success);
       }
       catch
       {
-        _logger.LogWarning($"Account with ID number {id} does not exist.");
+        _logger.LogWarning($"Account with email {email} does not exist.");
 
-        return NotFound(new ErrorObject($"Account with ID number {id} does not exist"));
+        return NotFound(new ErrorObject($"Account with email {email} does not exist"));
       }
     }
 
@@ -79,32 +81,33 @@ namespace RVTR.Account.WebApi.Controllers
     }
 
     /// <summary>
-    /// Get a user's account by account ID number
+    /// Get a user's account by account email
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(AccountModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(string email)
     {
-      AccountModel accountModel;
+      // Instead of directly retrieving by passed ID, search for account (& it's ID) from passed email first
+      AccountModel accountModel = await _unitOfWork.Account.SelectByEmailAsync(email);
 
-      _logger.LogDebug("Getting an account by its ID number...");
+      _logger.LogDebug("Getting an account by its email...");
 
-      accountModel = await _unitOfWork.Account.SelectAsync(id);
+      accountModel = await _unitOfWork.Account.SelectAsync(accountModel.Id);
 
 
       if (accountModel is AccountModel theAccount)
       {
-        _logger.LogInformation($"Retrieved the account with ID: {id}.");
+        _logger.LogInformation($"Retrieved the account with email {email}, ID: {accountModel.Id}.");
 
         return Ok(theAccount);
       }
 
-      _logger.LogWarning($"Account with ID number {id} does not exist.");
+      _logger.LogWarning($"Account with email {email} does not exist.");
 
-      return NotFound(new ErrorObject($"Account with ID number {id} does not exist."));
+      return NotFound(new ErrorObject($"Account with email {email} does not exist."));
     }
 
     /// <summary>

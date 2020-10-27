@@ -18,6 +18,9 @@ namespace RVTR.Account.DataContext.Repositories
       Db = context.Set<TEntity>();
     }
 
+    // Generic 'Get' method to be overridden by AccountRepository.cs for use in AccountController.cs
+    public virtual async Task<TEntity> SelectByEmailAsync(string email) => await SelectAsync(0);
+
     public virtual async Task DeleteAsync(int id) => Db.Remove(await SelectAsync(id));
 
     public virtual async Task InsertAsync(TEntity entry) => await Db.AddAsync(entry).ConfigureAwait(true);

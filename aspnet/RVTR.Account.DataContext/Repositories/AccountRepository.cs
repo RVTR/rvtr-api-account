@@ -26,5 +26,9 @@ namespace RVTR.Account.DataContext.Repositories
       .Include(x => x.Profiles)
       .Include(x => x.Payments)
       .ToListAsync();
+
+    // Select an account by email instead of by ID, as is the case with SelectAsync(id)
+    public override async Task<AccountModel> SelectByEmailAsync(string email) => await Db
+      .FirstOrDefaultAsync(x => x.Email == email);
   }
 }
