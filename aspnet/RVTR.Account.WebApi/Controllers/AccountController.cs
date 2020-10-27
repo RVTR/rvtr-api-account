@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using RVTR.Account.ObjectModel.Interfaces;
 using RVTR.Account.ObjectModel.Models;
@@ -114,18 +117,30 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post([FromBody] AccountModel account)
     {
 
       _logger.LogDebug("Adding an account...");
 
-      await _unitOfWork.Account.InsertAsync(account);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if there are any items in the validation list (if there are, it isn't valid)
+      //Throws a NoContent response since the account isn't valid
+      var validationResults = account.Validate(new ValidationContext(account));
+      if (validationResults != null || validationResults.Count() > 0)
+      {
+        _logger.LogInformation($"Invalid account '{account}'.");
+        return BadRequest(account);
+      }
+      else
+      {
 
-      _logger.LogInformation($"Successfully added the account {account}.");
+        await _unitOfWork.Account.InsertAsync(account);
+        await _unitOfWork.CommitAsync();
 
-      return Accepted(account);
+        _logger.LogInformation($"Successfully added the account {account}.");
 
+        return Accepted(account);
+      }
     }
 
     /// <summary>
@@ -136,18 +151,32 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
     public async Task<IActionResult> Put([FromBody] AccountModel account)
     {
       try
       {
         _logger.LogDebug("Updating an account...");
 
-        _unitOfWork.Account.Update(account);
-        await _unitOfWork.CommitAsync();
+        //Checks to see if there are any items in the validation list (if there are, it isn't valid)
+        //Throws a NoContent response since the account isn't valid
+        var validationResults = account.Validate(new ValidationContext(account));
+        if (validationResults != null || validationResults.Count() > 0)
+        {
+          _logger.LogInformation($"Invalid account '{account}'.");
+          return BadRequest(account);
+        }
+        else
+        {
 
-        _logger.LogInformation($"Successfully updated the account {account}.");
+          _unitOfWork.Account.Update(account);
+          await _unitOfWork.CommitAsync();
 
-        return Accepted(account);
+          _logger.LogInformation($"Successfully updated the account {account}.");
+
+          return Accepted(account);
+        }
       }
 
       catch

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -112,17 +114,29 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(PaymentModel payment)
     {
       _logger.LogDebug("Adding a payment...");
 
-      await _unitOfWork.Payment.InsertAsync(payment);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if there are any items in the validation list (if there are, it isn't valid)
+      //Throws a NoContent response since the payment isn't valid
+      var validationResults = payment.Validate(new ValidationContext(payment));
+      if (validationResults != null || validationResults.Count() > 0)
+      {
+        _logger.LogInformation($"Invalid payment '{payment}'.");
+        return BadRequest(payment);
+      }
+      else
+      {
 
-      _logger.LogInformation($"Successfully added the payment {payment}.");
+        await _unitOfWork.Payment.InsertAsync(payment);
+        await _unitOfWork.CommitAsync();
 
-      return Accepted(payment);
+        _logger.LogInformation($"Successfully added the payment {payment}.");
 
+        return Accepted(payment);
+      }
     }
 
     /// <summary>
@@ -133,19 +147,32 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(PaymentModel payment)
     {
       try
       {
         _logger.LogDebug("Updating a payment...");
 
-        _unitOfWork.Payment.Update(payment);
-        await _unitOfWork.CommitAsync();
+        //Checks to see if there are any items in the validation list (if there are, it isn't valid)
+        //Throws a NoContent response since the payment isn't valid
+        var validationResults = payment.Validate(new ValidationContext(payment));
+        if (validationResults != null || validationResults.Count() > 0)
+        {
+          _logger.LogInformation($"Invalid payment '{payment}'.");
+          return BadRequest(payment);
+        }
+        else
+        {
+
+          _unitOfWork.Payment.Update(payment);
+          await _unitOfWork.CommitAsync();
 
 
-        _logger.LogInformation($"Successfully updated the payment {payment}.");
+          _logger.LogInformation($"Successfully updated the payment {payment}.");
 
-        return Accepted(payment);
+          return Accepted(payment);
+        }
       }
 
       catch

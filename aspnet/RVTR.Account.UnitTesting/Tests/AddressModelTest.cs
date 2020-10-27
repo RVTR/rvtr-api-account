@@ -15,7 +15,7 @@ namespace RVTR.Account.UnitTesting.Tests
         {
           Id = 0,
           City = "city",
-          Country = "country",
+          Country = "USA",
           PostalCode = "postalcode",
           StateProvince = "stateprovince",
           Street = "street",
@@ -41,7 +41,9 @@ namespace RVTR.Account.UnitTesting.Tests
     {
       var validationContext = new ValidationContext(address);
 
-      Assert.Empty(address.Validate(validationContext));
+      var x = address.Validate(validationContext);
+
+      Assert.Empty(x);
     }
   }
 }

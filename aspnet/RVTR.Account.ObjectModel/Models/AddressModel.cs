@@ -39,6 +39,10 @@ namespace RVTR.Account.ObjectModel.Models
       {
         yield return new ValidationResult("Country cannot be null.");
       }
+      else if (Country != "USA" && Country != "US")
+      {
+        yield return new ValidationResult("Address must be in the United States");
+      }
       if (string.IsNullOrEmpty(PostalCode))
       {
         yield return new ValidationResult("PostalCode cannot be null.");

@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using RVTR.Account.ObjectModel.Interfaces;
 using RVTR.Account.ObjectModel.Models;
@@ -111,16 +114,29 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(AddressModel address)
     {
       _logger.LogDebug("Adding an address...");
 
-      await _unitOfWork.Address.InsertAsync(address);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if there are any items in the validation list
+      //Throws a NoContent response since the address isn't valid
+      var validationResults = address.Validate(new ValidationContext(address));
+      if (validationResults != null || validationResults.Count() > 0)
+      {
+        _logger.LogInformation($"Invalid address '{address}'.");
+        return BadRequest(address);
+      }
+      else
+      {
 
-      _logger.LogInformation($"Successfully added the address {address}.");
+        await _unitOfWork.Address.InsertAsync(address);
+        await _unitOfWork.CommitAsync();
 
-      return Accepted(address);
+        _logger.LogInformation($"Successfully added the address {address}.");
+
+        return Accepted(address);
+      }
     }
 
     /// <summary>
@@ -131,19 +147,31 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(AddressModel address)
     {
       try
       {
         _logger.LogDebug("Updating an address...");
 
-        _unitOfWork.Address.Update(address);
-        await _unitOfWork.CommitAsync();
 
-        _logger.LogInformation($"Successfully updated the address {address}.");
+        //Checks to see if there are any items in the validation list
+        //Throws a NoContent response since the address isn't valid
+        var validationResults = address.Validate(new ValidationContext(address));
+        if (validationResults != null || validationResults.Count() > 0)
+        {
+          _logger.LogInformation($"Invalid address '{address}'.");
+          return BadRequest(address);
+        }
+        else
+        {
+          _unitOfWork.Address.Update(address);
+          await _unitOfWork.CommitAsync();
 
-        return Accepted(address);
+          _logger.LogInformation($"Successfully updated the address {address}.");
 
+          return Accepted(address);
+        }
       }
       catch
       {
