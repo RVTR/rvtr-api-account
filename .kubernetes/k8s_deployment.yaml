@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: account
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: account
@@ -30,7 +30,9 @@ spec:
           ports:
             - containerPort: 80
               name: account-http
-
+          volumeMounts:
+            - mountPath: /storage
+              name: acct-storage
         - env:
             - name: POSTGRES_PASSWORD
               value: AccountData@2020
@@ -40,6 +42,8 @@ spec:
           ports:
             - containerPort: 5432
               name: postgres-tcp
-
+      volumes:
+        - name: acct-storage
+          emptyDir: {}
       imagePullSecrets:
         - name: github
