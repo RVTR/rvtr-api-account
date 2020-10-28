@@ -120,7 +120,7 @@ namespace RVTR.Account.WebApi.Controllers
       _logger.LogDebug("Adding a payment...");
 
       //Checks to see if there are any items in the validation list (if there are, it isn't valid)
-      //Throws a NoContent response since the payment isn't valid
+      //Throws a 400BadRequest response since the payment isn't valid
       var validationResults = payment.Validate(new ValidationContext(payment));
       if (validationResults != null || validationResults.Count() > 0)
       {
@@ -150,12 +150,10 @@ namespace RVTR.Account.WebApi.Controllers
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(PaymentModel payment)
     {
-      try
-      {
         _logger.LogDebug("Updating a payment...");
 
         //Checks to see if there are any items in the validation list (if there are, it isn't valid)
-        //Throws a NoContent response since the payment isn't valid
+        //Throws a 400BadRequest response since the payment isn't valid
         var validationResults = payment.Validate(new ValidationContext(payment));
         if (validationResults != null || validationResults.Count() > 0)
         {
@@ -164,23 +162,23 @@ namespace RVTR.Account.WebApi.Controllers
         }
         else
         {
+          try
+          {
+            _unitOfWork.Payment.Update(payment);
+            await _unitOfWork.CommitAsync();
 
-          _unitOfWork.Payment.Update(payment);
-          await _unitOfWork.CommitAsync();
 
+            _logger.LogInformation($"Successfully updated the payment {payment}.");
 
-          _logger.LogInformation($"Successfully updated the payment {payment}.");
+            return Accepted(payment);
+          }
+          catch
+          {
+            _logger.LogWarning($"This payment does not exist.");
 
-          return Accepted(payment);
+            return NotFound(new ErrorObject($"Payment with ID number {payment.Id} does not exist"));
+          }
         }
-      }
-
-      catch
-      {
-        _logger.LogWarning($"This payment does not exist.");
-
-        return NotFound(new ErrorObject($"Payment with ID number {payment.Id} does not exist"));
-      }
     }
 
   }

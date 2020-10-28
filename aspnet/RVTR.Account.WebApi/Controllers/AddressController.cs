@@ -120,7 +120,7 @@ namespace RVTR.Account.WebApi.Controllers
       _logger.LogDebug("Adding an address...");
 
       //Checks to see if there are any items in the validation list
-      //Throws a NoContent response since the address isn't valid
+      //Throws a 400BadRequest response since the address isn't valid
       var validationResults = address.Validate(new ValidationContext(address));
       if (validationResults != null || validationResults.Count() > 0)
       {
@@ -150,13 +150,10 @@ namespace RVTR.Account.WebApi.Controllers
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(AddressModel address)
     {
-      try
-      {
         _logger.LogDebug("Updating an address...");
 
-
         //Checks to see if there are any items in the validation list
-        //Throws a NoContent response since the address isn't valid
+        //Throws a 400BadRequest response since the address isn't valid
         var validationResults = address.Validate(new ValidationContext(address));
         if (validationResults != null || validationResults.Count() > 0)
         {
@@ -165,22 +162,22 @@ namespace RVTR.Account.WebApi.Controllers
         }
         else
         {
-          _unitOfWork.Address.Update(address);
-          await _unitOfWork.CommitAsync();
+          try
+          {
+            _unitOfWork.Address.Update(address);
+            await _unitOfWork.CommitAsync();
 
-          _logger.LogInformation($"Successfully updated the address {address}.");
+            _logger.LogInformation($"Successfully updated the address {address}.");
 
-          return Accepted(address);
+            return Accepted(address);
+          }
+          catch
+          {
+            _logger.LogWarning($"This address does not exist.");
+
+            return NotFound(new ErrorObject($"Address with ID number {address.Id} does not exist."));
+          }
         }
-      }
-      catch
-      {
-        _logger.LogWarning($"This address does not exist.");
-
-        return NotFound(new ErrorObject($"Address with ID number {address.Id} does not exist."));
-
-      }
-
     }
 
   }

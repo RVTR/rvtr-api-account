@@ -118,7 +118,7 @@ namespace RVTR.Account.WebApi.Controllers
       _logger.LogDebug("Adding a profile...");
 
       //Checks to see if there are any items in the validation list
-      //Throws a NoContent response since the address isn't valid
+      //Throws a 400BadRequest response since the address isn't valid
       var validationResults = profile.Validate(new ValidationContext(profile));
       if (validationResults != null || validationResults.Count() > 0)
       {
@@ -147,12 +147,10 @@ namespace RVTR.Account.WebApi.Controllers
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Put(ProfileModel profile)
     {
-      try
-      {
         _logger.LogDebug("Updating a profile...");
 
         //Checks to see if there are any items in the validation list
-        //Throws a NoContent response since the address isn't valid
+        //Throws a 400BadRequest response since the address isn't valid
         var validationResults = profile.Validate(new ValidationContext(profile));
         if (validationResults != null || validationResults.Count() > 0)
         {
@@ -161,22 +159,23 @@ namespace RVTR.Account.WebApi.Controllers
         }
         else
         {
+          try
+          {
 
-          _unitOfWork.Profile.Update(profile);
-          await _unitOfWork.CommitAsync();
+            _unitOfWork.Profile.Update(profile);
+            await _unitOfWork.CommitAsync();
 
-          _logger.LogInformation($"Successfully updated the profile {profile}.");
+            _logger.LogInformation($"Successfully updated the profile {profile}.");
 
-          return Accepted(profile);
+            return Accepted(profile);
+          }
+          catch
+          {
+            _logger.LogWarning($"This profile does not exist.");
+
+            return NotFound(new ErrorObject($"Profile with ID number {profile.Id} does not exist."));
+          }
         }
-      }
-      catch
-      {
-        _logger.LogWarning($"This profile does not exist.");
-
-        return NotFound(new ErrorObject($"Profile with ID number {profile.Id} does not exist."));
-      }
-
     }
 
   }

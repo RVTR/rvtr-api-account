@@ -127,7 +127,7 @@ namespace RVTR.Account.WebApi.Controllers
       _logger.LogDebug("Adding an account...");
 
       //Checks to see if there are any items in the validation list (if there are, it isn't valid)
-      //Throws a NoContent response since the account isn't valid
+      //Throws a 400BadRequest response since the account isn't valid
       var validationResults = account.Validate(new ValidationContext(account));
       if (validationResults != null || validationResults.Count() > 0)
       {
@@ -158,12 +158,10 @@ namespace RVTR.Account.WebApi.Controllers
 
     public async Task<IActionResult> Put([FromBody] AccountModel account)
     {
-      try
-      {
         _logger.LogDebug("Updating an account...");
 
         //Checks to see if there are any items in the validation list (if there are, it isn't valid)
-        //Throws a NoContent response since the account isn't valid
+        //Throws a 400BadRequest response since the account isn't valid
         var validationResults = account.Validate(new ValidationContext(account));
         if (validationResults != null || validationResults.Count() > 0)
         {
@@ -172,23 +170,23 @@ namespace RVTR.Account.WebApi.Controllers
         }
         else
         {
+          try
+          {
 
-          _unitOfWork.Account.Update(account);
-          await _unitOfWork.CommitAsync();
+            _unitOfWork.Account.Update(account);
+            await _unitOfWork.CommitAsync();
 
-          _logger.LogInformation($"Successfully updated the account {account}.");
+            _logger.LogInformation($"Successfully updated the account {account}.");
 
-          return Accepted(account);
+            return Accepted(account);
+          }
+          catch
+          {
+            _logger.LogWarning($"This account does not exist.");
+
+            return NotFound(new ErrorObject($"Account with ID number {account.Id} does not exist"));
+          }
         }
-      }
-
-      catch
-      {
-        _logger.LogWarning($"This account does not exist.");
-
-        return NotFound(new ErrorObject($"Account with ID number {account.Id} does not exist"));
-      }
-
     }
 
   }
