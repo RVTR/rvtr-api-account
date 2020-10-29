@@ -40,20 +40,20 @@ namespace RVTR.Account.DataContext
         new PaymentModel()
         {
           Id = -1,
-          cardExpirationDate = new DateTime(),
-          cardNumber = "xxxx-1234",
-          cardName = "Visa",
-          securityCode = "123",
+          CardExpirationDate = new DateTime(),
+          CardNumber = "xxxx-1234",
+          CardName = "Visa",
+          SecurityCode = "123",
           AccountId = -1
         },
         new PaymentModel()
         {
           Id = 1,
           AccountId = 1,
-          cardExpirationDate = new System.DateTime(2020, 08, 31),
-          cardNumber = "4111111111111111",
-          securityCode = "123",
-          cardName = "user's credit card"
+          CardExpirationDate = new System.DateTime(2020, 08, 31),
+          CardNumber = "4111111111111111",
+          SecurityCode = "123",
+          CardName = "user's credit card"
         }
       );
       modelBuilder.Entity<AddressModel>().HasData

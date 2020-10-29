@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RVTR.Account.ObjectModel.Interfaces;
@@ -28,6 +29,7 @@ namespace RVTR.Account.UnitTesting.Tests
       repositoryMock.Setup(m => m.SelectAsync()).ReturnsAsync((IEnumerable<ProfileModel>)null);
       repositoryMock.Setup(m => m.SelectAsync(0)).Throws(new Exception());
       repositoryMock.Setup(m => m.SelectAsync(1)).ReturnsAsync((ProfileModel)null);
+      repositoryMock.Setup(m => m.SelectAsync(2)).ReturnsAsync(new ProfileModel("test@gmail.com", "Name", "Name", "1234567899", "Type", new AccountModel()) { Id = 2 });
       repositoryMock.Setup(m => m.Update(It.IsAny<ProfileModel>()));
       unitOfWorkMock.Setup(m => m.Profile).Returns(repositoryMock.Object);
 
@@ -59,19 +61,70 @@ namespace RVTR.Account.UnitTesting.Tests
     }
 
     [Fact]
-    public async void Test_Controller_Post()
+    public async void Test_Controller_Post_OK()
     {
-      var resultPass = await _controller.Post(new ProfileModel());
+      //Arrange
+      ProfileModel profile = new ProfileModel("test@gmail.com", "Name", "Name", "1234567899", "Type", new AccountModel());
 
-      Assert.NotNull(resultPass);
+      //Act
+      var resultPass = await _controller.Post(profile);
+
+      //Assert
+      Assert.IsType<AcceptedResult>(resultPass);
     }
 
     [Fact]
-    public async void Test_Controller_Put()
+    public async void Test_Controller_Post_BadRequest()
     {
-      var resultPass = await _controller.Put(new ProfileModel());
+      //Arrange
+      ProfileModel profile = new ProfileModel("", "Name", "Name", "1234567899", "Type", new AccountModel()); //Bad email
 
-      Assert.NotNull(resultPass);
+      //Act
+      var result = await _controller.Post(profile);
+
+      //Assert
+      Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_OK()
+    {
+      //Arrange
+      ProfileModel profile = await _unitOfWork.Profile.SelectAsync(2);
+      profile.familyName = "Name";
+
+      //Act
+      var resultPass = await _controller.Put(profile);
+
+      //Assert
+      Assert.IsType<AcceptedResult>(resultPass);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_BadRequest()
+    {
+      //Arrange
+      ProfileModel profile = await _unitOfWork.Profile.SelectAsync(2);
+      profile.familyName = "123"; //Bad name
+
+      //Act
+      var result = await _controller.Post(profile);
+
+      //Assert
+      Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_NotFound()
+    {
+      //Arrange
+      ProfileModel profile = new ProfileModel("test@gmail.com", "Name", "Name", "1234567899", "Type", new AccountModel());
+
+      //Act
+      var result = await _controller.Put(profile);
+
+      //Assert
+      Assert.IsType<NotFoundObjectResult>(result);
     }
   }
 }

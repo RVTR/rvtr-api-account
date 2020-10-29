@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RVTR.Account.ObjectModel.Interfaces;
@@ -28,6 +29,7 @@ namespace RVTR.Account.UnitTesting.Tests
       repositoryMock.Setup(m => m.SelectAsync()).ReturnsAsync((IEnumerable<PaymentModel>)null);
       repositoryMock.Setup(m => m.SelectAsync(0)).Throws(new Exception());
       repositoryMock.Setup(m => m.SelectAsync(1)).ReturnsAsync((PaymentModel)null);
+      repositoryMock.Setup(m => m.SelectAsync(2)).ReturnsAsync(new PaymentModel(DateTime.Now, "4123-4123-4123-4123", "111", "Alex", new AccountModel("Alex")) { Id = 2 });
       repositoryMock.Setup(m => m.Update(It.IsAny<PaymentModel>()));
       unitOfWorkMock.Setup(m => m.Payment).Returns(repositoryMock.Object);
 
@@ -59,19 +61,71 @@ namespace RVTR.Account.UnitTesting.Tests
     }
 
     [Fact]
-    public async void Test_Controller_Post()
+    public async void Test_Controller_Post_OK()
     {
-      var resultPass = await _controller.Post(new PaymentModel());
+      PaymentModel payment = new PaymentModel()
+      {
+        Id = 0,
+        CardExpirationDate = DateTime.Now,
+        CardName = "Name",
+        CardNumber = "4234-1234-1234-1234",
+        SecurityCode = "111",
+        AccountId = 0,
+        Account = new AccountModel(),
+      };
 
-      Assert.NotNull(resultPass);
+      var resultPass = await _controller.Post(payment);
+
+      Assert.IsType<AcceptedResult>(resultPass);
     }
 
     [Fact]
-    public async void Test_Controller_Put()
+    public async void Test_Controller_Post_BadRequest()
     {
-      var resultPass = await _controller.Put(new PaymentModel());
+      var resultPass = await _controller.Post(new PaymentModel());
 
-      Assert.NotNull(resultPass);
+      Assert.IsType<BadRequestObjectResult>(resultPass);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_OK()
+    {
+      //Arrange
+      PaymentModel payment = await _unitOfWork.Payment.SelectAsync(2);
+      payment.CardName = "Name";
+
+      //Act
+      var resultPass = await _controller.Put(payment);
+
+      //Assert
+      Assert.IsType<AcceptedResult>(resultPass);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_BadRequest()
+    {
+      //Arrange
+      PaymentModel payment = new PaymentModel(DateTime.Now, "4123-4123-4123-4123asdfasdfasdf", "111", "Alex", new AccountModel("Alex")) { Id = 2 };
+
+      //Act
+      var resultPass = await _controller.Put(payment);
+
+      //Assert
+      Assert.IsType<BadRequestObjectResult>(resultPass);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_NotFound()
+    {
+      //Arrange
+      PaymentModel payment = new PaymentModel(DateTime.Now, "4123-4123-4123-4123", "111", "Alex", new AccountModel("Alex"));
+
+
+      //Act
+      var resultPass = await _controller.Put(payment);
+
+      //Assert
+      Assert.IsType<NotFoundObjectResult>(resultPass);
     }
   }
 }

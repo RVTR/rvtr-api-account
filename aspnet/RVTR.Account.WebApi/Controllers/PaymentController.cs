@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -112,17 +113,29 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(PaymentModel payment)
     {
       _logger.LogDebug("Adding a payment...");
 
-      await _unitOfWork.Payment.InsertAsync(payment);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if the payment model is valid
+      //Sends a 400BadRequest response since the payment isn't valid
+      var context = new ValidationContext(payment);
+      if (!Validator.TryValidateObject(payment, context, null, true))
+      {
+        _logger.LogDebug("Payment model state is invalid.");
 
-      _logger.LogInformation($"Successfully added the payment {payment}.");
+        return BadRequest(payment); //Return 400
+      }
+      else
+      {
+        await _unitOfWork.Payment.InsertAsync(payment); //Add payment to db
+        await _unitOfWork.CommitAsync();                //Save changes
 
-      return Accepted(payment);
+        _logger.LogInformation($"Successfully added the payment {payment}.");
 
+        return Accepted(payment); //Return 202
+      }
     }
 
     /// <summary>
@@ -133,28 +146,41 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(PaymentModel payment)
     {
-      try
+      _logger.LogDebug("Updating a payment...");
+
+      //Checks to see if the payment model is valid
+      //Sends a 400BadRequest response since the payment isn't valid
+      var context = new ValidationContext(payment);
+      if (!Validator.TryValidateObject(payment, context, null, true))
       {
-        _logger.LogDebug("Updating a payment...");
+        _logger.LogDebug("Payment model state is invalid.");
 
-        _unitOfWork.Payment.Update(payment);
-        await _unitOfWork.CommitAsync();
-
-
-        _logger.LogInformation($"Successfully updated the payment {payment}.");
-
-        return Accepted(payment);
+        return BadRequest(payment); //Return 400
       }
-
-      catch
+      else //If the model state is valid...
       {
-        _logger.LogWarning($"This payment does not exist.");
+        try
+        {
+          PaymentModel foundPayment = await _unitOfWork.Payment.SelectAsync(payment.Id); //Find the payment to update
 
-        return NotFound(new ErrorObject($"Payment with ID number {payment.Id} does not exist"));
+          _unitOfWork.Payment.Update(payment);  //Update payement in db
+          await _unitOfWork.CommitAsync();      //Save changes
+
+
+          _logger.LogInformation($"Successfully updated the payment {payment}.");
+
+          return Accepted(payment); //Return 202 OK
+        }
+        catch
+        {
+          _logger.LogWarning($"This payment does not exist.");
+
+          return NotFound(new ErrorObject($"Payment with ID number {payment.Id} does not exist"));  //Return not found
+        }
       }
     }
-
   }
 }

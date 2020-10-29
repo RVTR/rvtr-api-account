@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -114,18 +115,31 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post([FromBody] AccountModel account)
     {
 
       _logger.LogDebug("Adding an account...");
 
-      await _unitOfWork.Account.InsertAsync(account);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if the account model is valid
+      //Throws a 400BadRequest response since the account isn't valid
+      var context = new ValidationContext(account);
+      if (!Validator.TryValidateObject(account, context, null, true))
+      {
+        _logger.LogDebug("Account model state is invalid.");
 
-      _logger.LogInformation($"Successfully added the account {account}.");
+        return BadRequest(account);
+      }
+      else
+      {
 
-      return Accepted(account);
+        await _unitOfWork.Account.InsertAsync(account);
+        await _unitOfWork.CommitAsync();
 
+        _logger.LogInformation($"Successfully added the account {account}.");
+
+        return Accepted(account);
+      }
     }
 
     /// <summary>
@@ -136,28 +150,40 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put([FromBody] AccountModel account)
     {
-      try
+      _logger.LogDebug("Updating an account...");
+
+      //Checks to see if the account model is valid
+      //Throws a 400BadRequest response since the account isn't valid
+      var context = new ValidationContext(account);
+      if (!Validator.TryValidateObject(account, context, null, true))
       {
-        _logger.LogDebug("Updating an account...");
+        _logger.LogDebug("Account model state is invalid.");
 
-        _unitOfWork.Account.Update(account);
-        await _unitOfWork.CommitAsync();
-
-        _logger.LogInformation($"Successfully updated the account {account}.");
-
-        return Accepted(account);
+        return BadRequest(account);
       }
-
-      catch
+      else //If the account model is valid...
       {
-        _logger.LogWarning($"This account does not exist.");
+        try {
+          AccountModel foundAccount = await _unitOfWork.Account.SelectAsync(account.Id); //Find the account to update
 
-        return NotFound(new ErrorObject($"Account with ID number {account.Id} does not exist"));
+          _unitOfWork.Account.Update(account); //Update the account model
+          await _unitOfWork.CommitAsync();     //Save the changes
+
+          _logger.LogInformation($"Successfully updated the account {account}.");
+
+          return Accepted(account); //Return 202
+        }
+
+        catch
+        {
+          _logger.LogWarning($"This account does not exist.");
+
+          return NotFound(new ErrorObject($"Account with ID number {account.Id} does not exist")); //Return 404
+        }
       }
-
     }
-
   }
 }

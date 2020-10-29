@@ -10,19 +10,46 @@ namespace RVTR.Account.ObjectModel.Models
   {
     public int Id { get; set; }
 
+    [Required]
+    [EmailAddress(ErrorMessage = "must be a real email address.")]
     public string Email { get; set; }
 
+    [Required]
+    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
     public string familyName { get; set; }
 
+    [Required]
+    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
     public string givenName { get; set; }
 
+    [Required]
+    [Phone(ErrorMessage = "Must be a phone number")]
     public string Phone { get; set; }
 
+    [Required]
+    [MinLength(1)]
+    [MaxLength(50)]
     public string Type { get; set; }
 
     public int? AccountId { get; set; }
 
+    [Required]
     public AccountModel Account { get; set; }
+
+
+    public ProfileModel() { }
+
+
+    public ProfileModel(string email, string lastName, string firstName, string phoneNumber, string type, AccountModel account)
+    {
+      Email = email;
+      familyName = lastName;
+      givenName = firstName;
+      Phone = phoneNumber;
+      Type = type;
+      Account = account;
+    }
+
 
     /// <summary>
     /// Represents the _Profile_ `Validate` method

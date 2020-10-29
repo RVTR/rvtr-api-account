@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -111,16 +112,29 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(ProfileModel profile)
     {
       _logger.LogDebug("Adding a profile...");
 
-      await _unitOfWork.Profile.InsertAsync(profile);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if the profile model is valid
+      //Throws a 400BadRequest response since the profile isn't valid
+      var context = new ValidationContext(profile);
+      if (!Validator.TryValidateObject(profile, context, null, true))
+      {
+        _logger.LogDebug("Profile model state is invalid.");
 
-      _logger.LogInformation($"Successfully added the profile {profile}.");
+        return BadRequest(profile); //Return 400
+      }
+      else //If model state is valid...
+      {
+        await _unitOfWork.Profile.InsertAsync(profile); //Insert new profile into db
+        await _unitOfWork.CommitAsync();                //Save db changes
 
-      return Accepted(profile);
+        _logger.LogInformation($"Successfully added the profile {profile}.");
+
+        return Accepted(profile); //return 202
+      }
     }
 
     /// <summary>
@@ -131,27 +145,40 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(ProfileModel profile)
     {
-      try
+      //Checks to see if the profile model is valid
+      //Throws a 400BadRequest response since the profile isn't valid
+      var context = new ValidationContext(profile);
+      if (!Validator.TryValidateObject(profile, context, null, true))
       {
-        _logger.LogDebug("Updating a profile...");
+        _logger.LogDebug("Profile model state is invalid.");
 
-        _unitOfWork.Profile.Update(profile);
-        await _unitOfWork.CommitAsync();
-
-        _logger.LogInformation($"Successfully updated the profile {profile}.");
-
-        return Accepted(profile);
+        return BadRequest(profile); //Return 400
       }
-      catch
+      else //If model state is valid...
       {
-        _logger.LogWarning($"This profile does not exist.");
+        try
+        {
+          ProfileModel foundAccount = await _unitOfWork.Profile.SelectAsync(profile.Id); //Try to find the profile to update
 
-        return NotFound(new ErrorObject($"Profile with ID number {profile.Id} does not exist."));
+          _logger.LogDebug("Updating a profile...");
+
+          _unitOfWork.Profile.Update(profile);  //Update rpfile in db
+          await _unitOfWork.CommitAsync();      //Save changes in db
+
+          _logger.LogInformation($"Successfully updated the profile {profile}.");
+
+          return Accepted(profile); //Return 202
+        }
+        catch
+        {
+          _logger.LogWarning($"This profile does not exist.");
+
+          return NotFound(new ErrorObject($"Profile with ID number {profile.Id} does not exist.")); //Return 404
+        }
       }
-
     }
-
   }
 }

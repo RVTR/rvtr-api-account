@@ -14,13 +14,13 @@ namespace RVTR.Account.UnitTesting.Tests
         new AddressModel()
         {
           Id = 0,
-          City = "city",
-          Country = "country",
-          PostalCode = "postalcode",
-          StateProvince = "stateprovince",
-          Street = "street",
+          City = "City",
+          Country = "USA",
+          PostalCode = "27516",
+          StateProvince = "MA",
+          Street = "Street",
           AccountId = 0,
-          Account = null,
+          Account = new AccountModel(),
         }
       }
     };

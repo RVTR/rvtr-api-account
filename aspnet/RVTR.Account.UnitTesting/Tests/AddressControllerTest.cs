@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RVTR.Account.ObjectModel.Interfaces;
@@ -28,6 +29,7 @@ namespace RVTR.Account.UnitTesting.Tests
       repositoryMock.Setup(m => m.SelectAsync()).ReturnsAsync((IEnumerable<AddressModel>)null);
       repositoryMock.Setup(m => m.SelectAsync(0)).Throws(new Exception());
       repositoryMock.Setup(m => m.SelectAsync(1)).ReturnsAsync((AddressModel)null);
+      repositoryMock.Setup(m => m.SelectAsync(2)).ReturnsAsync(new AddressModel("City", "USA", "11111", "NC", "11 street st.", new AccountModel("Bob")) { Id = 2});
       repositoryMock.Setup(m => m.Update(It.IsAny<AddressModel>()));
       unitOfWorkMock.Setup(m => m.Address).Returns(repositoryMock.Object);
 
@@ -59,19 +61,45 @@ namespace RVTR.Account.UnitTesting.Tests
     }
 
     [Fact]
-    public async void Test_Controller_Post()
+    public async void Test_Controller_Post_OK()
     {
-      var resultPass = await _controller.Post(new AddressModel());
+      AddressModel address = new AddressModel("City", "USA", "27516", "NC", "109 Street st.", new AccountModel("Bob"));
 
-      Assert.NotNull(resultPass);
+      var resultPass = await _controller.Post(address);
+
+      Assert.IsType<AcceptedResult>(resultPass);
     }
 
     [Fact]
-    public async void Test_Controller_Put()
+    public async void Test_Controller_Put_OK()
     {
-      var resultPass = await _controller.Put(new AddressModel());
+      //Arrange
+      AddressModel address = await _unitOfWork.Address.SelectAsync(2);
+      address.Street = "204 Street st.";
 
-      Assert.NotNull(resultPass);
+      //Act
+      var resultPass = await _controller.Put(address);
+
+      //Assert
+      Assert.IsType<AcceptedResult>(resultPass);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_BadRequest()
+    {
+      var badRequest = await _controller.Put(new AddressModel());
+
+      Assert.IsType<BadRequestObjectResult>(badRequest);
+    }
+
+    [Fact]
+    public async void Test_Controller_Put_NotFound()
+    {
+      AddressModel address = new AddressModel("City", "USA", "27516", "NC", "109 Street st.", new AccountModel("Bob"));
+
+      var notFound = await _controller.Put(address); //Can't update a new account model not in the db
+
+      Assert.IsType<NotFoundObjectResult>(notFound);
     }
   }
 }

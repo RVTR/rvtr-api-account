@@ -14,11 +14,11 @@ namespace RVTR.Account.UnitTesting.Tests
         new PaymentModel()
         {
           Id = 0,
-          cardName = "name",
-          cardNumber = "1234-1234-1234-1234",
-          securityCode = "111",
+          CardName = "Name",
+          CardNumber = "4234-1234-1234-1234",
+          SecurityCode = "111",
           AccountId = 0,
-          Account = null,
+          Account = new AccountModel(),
         }
       }
     };

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -111,16 +112,29 @@ namespace RVTR.Account.WebApi.Controllers
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post(AddressModel address)
     {
       _logger.LogDebug("Adding an address...");
 
-      await _unitOfWork.Address.InsertAsync(address);
-      await _unitOfWork.CommitAsync();
+      //Checks to see if the address model is valid
+      //Sends a 400BadRequest response since the address isn't valid
+      var context = new ValidationContext(address);
+      if (!Validator.TryValidateObject(address, context, null, true))
+      {
+        _logger.LogDebug("Address model state is invalid.");
 
-      _logger.LogInformation($"Successfully added the address {address}.");
+        return BadRequest(address);
+      }
+      else
+      {
+        await _unitOfWork.Address.InsertAsync(address); //Insert new address into db
+        await _unitOfWork.CommitAsync();                //Update db
 
-      return Accepted(address);
+        _logger.LogInformation($"Successfully added the address {address}.");
+
+        return Accepted(address);
+      }
     }
 
     /// <summary>
@@ -131,29 +145,41 @@ namespace RVTR.Account.WebApi.Controllers
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Put(AddressModel address)
     {
-      try
+      _logger.LogDebug("Updating an address...");
+
+      //Checks to see if the address model is valid
+      //Sends a 400BadRequest response since the address isn't valid
+      var context = new ValidationContext(address);
+      if (!Validator.TryValidateObject(address, context, null, true))
       {
-        _logger.LogDebug("Updating an address...");
+        _logger.LogDebug("Address model state is invalid.");
 
-        _unitOfWork.Address.Update(address);
-        await _unitOfWork.CommitAsync();
-
-        _logger.LogInformation($"Successfully updated the address {address}.");
-
-        return Accepted(address);
-
+        return BadRequest(address);
       }
-      catch
+      else //If the model state is valid...
       {
-        _logger.LogWarning($"This address does not exist.");
+        try
+        {
+          AddressModel foundAccount = await _unitOfWork.Address.SelectAsync(address.Id); //Find the address to update
 
-        return NotFound(new ErrorObject($"Address with ID number {address.Id} does not exist."));
+          _unitOfWork.Address.Update(address);  //Update the address in db
+          await _unitOfWork.CommitAsync();      //Save changes to db
 
+          _logger.LogInformation($"Successfully updated the address {address}.");
+
+          return Accepted(address); //Return 202
+
+        }
+        catch
+        {
+          _logger.LogWarning($"This address does not exist.");
+
+          return NotFound(new ErrorObject($"Address with ID number {address.Id} does not exist.")); //Return 404
+        }
       }
-
     }
-
   }
 }
