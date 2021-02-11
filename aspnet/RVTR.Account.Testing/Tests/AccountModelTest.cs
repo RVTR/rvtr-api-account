@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using RVTR.Account.Domain.Models;
 using Xunit;
 
@@ -73,5 +74,16 @@ namespace RVTR.Account.Testing.Tests
 
       Assert.Empty(account.Validate(validationContext));
     }
+
+    [Fact]
+    public void Test_Create_Account_Profile_Creation()
+    {
+      AccountModel account = new AccountModel("Jim","Jimmy", "abcd@gmail.com");
+      var profile = account.Profiles.ToList().Last();
+
+      Assert.IsType<ProfileModel>(profile);
+      Assert.True(profile.IsAccountHolder);
+    }
+
   }
 }

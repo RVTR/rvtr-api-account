@@ -24,15 +24,19 @@ namespace RVTR.Account.Domain.Models
     [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
     public string LastName { get; set; }
 
-    public IEnumerable<PaymentModel> Payments { get; set; } = new List<PaymentModel>();
+    public List<PaymentModel> Payments { get; set; }
 
-    public IEnumerable<ProfileModel> Profiles { get; set; } = new List<ProfileModel>();
+    public List<ProfileModel> Profiles { get; set; }
 
 
     /// <summary>
     /// Empty constructor
     /// </summary>
-    public AccountModel() { }
+    public AccountModel()
+    {
+      Payments = new List<PaymentModel>();
+      Profiles = new List<ProfileModel>();
+    }
 
     /// <summary>
     /// Constructor that takes a name and an email
@@ -45,6 +49,7 @@ namespace RVTR.Account.Domain.Models
       FirstName = firstName;
       LastName = lastName;
       Email = email;
+      Payments = new List<PaymentModel>();
       Profiles = new List<ProfileModel> {
         new ProfileModel(firstName, lastName, email, true)
       };
