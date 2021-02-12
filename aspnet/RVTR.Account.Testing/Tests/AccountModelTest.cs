@@ -65,6 +65,16 @@ namespace RVTR.Account.Testing.Tests
       Assert.False(actual);
     }
 
+    [Fact]
+    public void Test_Create_Account_Profile_Creation()
+    {
+      AccountModel account = new AccountModel("Jim","Jimmy", "abcd@gmail.com");
+      var profile = account.Profiles[0];
+
+      Assert.IsType<ProfileModel>(profile);
+      Assert.True(profile.IsAccountHolder);
+    }
+
     [Theory]
     [MemberData(nameof(Accounts))]
     public void Test_Validate_AccountModel(AccountModel account)
@@ -73,5 +83,7 @@ namespace RVTR.Account.Testing.Tests
 
       Assert.Empty(account.Validate(validationContext));
     }
+
+
   }
 }

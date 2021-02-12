@@ -23,16 +23,17 @@ namespace RVTR.Account.Domain.Models
     [MaxLength(50, ErrorMessage = "Last name must be fewer than 50 characters.")]
     [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Last name must start with a capital letter and only use letters.")]
     public string LastName { get; set; }
-
-    public IEnumerable<PaymentModel> Payments { get; set; } = new List<PaymentModel>();
-
-    public List<ProfileModel> Profiles { get; set; } = new List<ProfileModel>();
-
+    public List<PaymentModel> Payments { get; set; }
+    public List<ProfileModel> Profiles { get; set; }
 
     /// <summary>
     /// Empty constructor
     /// </summary>
-    public AccountModel() { }
+    public AccountModel()
+    {
+      Profiles = new List<ProfileModel>();
+      Payments  = new List<PaymentModel>();
+    }
 
     /// <summary>
     /// Constructor that takes a name and an email
@@ -47,6 +48,7 @@ namespace RVTR.Account.Domain.Models
       Profiles = new List<ProfileModel> {
         new ProfileModel(firstName, lastName, email, true)
       };
+      Payments  = new List<PaymentModel>();
     }
 
 
