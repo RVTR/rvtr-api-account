@@ -35,7 +35,18 @@ namespace RVTR.Account.Domain.Models
 
     public int AccountModelId { get; set; }
 
+    /// <summary>
+    /// Empty Constructor
+    /// </summary>
     public ProfileModel(){}
+
+    /// <summary>
+    /// Constructor that takes a first name, last name, email, and isAccountHolder value
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="email"></param>
+    /// <param name="isAccountHolder"></param>
     public ProfileModel(string firstName, string lastName, string email, bool isAccountHolder)
     {
       GivenName = firstName;

@@ -38,7 +38,8 @@ namespace RVTR.Account.Domain.Models
     /// <summary>
     /// Constructor that takes a first name, last name, and an email
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
     /// <param name="email"></param>
     public AccountModel(string firstName, string lastName, string email)
     {
