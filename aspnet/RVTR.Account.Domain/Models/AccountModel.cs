@@ -36,7 +36,7 @@ namespace RVTR.Account.Domain.Models
     }
 
     /// <summary>
-    /// Constructor that takes a name and an email
+    /// Constructor that takes a first name, last name, and an email
     /// </summary>
     /// <param name="name"></param>
     /// <param name="email"></param>
@@ -59,9 +59,13 @@ namespace RVTR.Account.Domain.Models
     /// <returns></returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-      if (string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName))
+      if (string.IsNullOrEmpty(FirstName))
       {
-        yield return new ValidationResult("Account name cannot be null.");
+        yield return new ValidationResult("Account FirstName cannot be null.");
+      }
+      else if (string.IsNullOrEmpty(LastName))
+      {
+        yield return new ValidationResult("Account LastName cannot be null.");
       }
     }
   }

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RVTR.Account.Domain.Models
 {
-  //ISAIAH TESTS THIS
   /// <summary>
   /// Represents the _Profile_ model
   /// </summary>
