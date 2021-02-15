@@ -58,7 +58,7 @@ namespace RVTR.Account.Testing.Tests
       Assert.NotNull(resultOne);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Post()
     {
       var resultPass = await _controller.Post(new AddressModel());
@@ -66,7 +66,7 @@ namespace RVTR.Account.Testing.Tests
       Assert.NotNull(resultPass);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Put()
     {
       var resultPass = await _controller.Put(new AddressModel());

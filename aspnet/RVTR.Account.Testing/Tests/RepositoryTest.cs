@@ -12,7 +12,7 @@ namespace RVTR.Account.Testing.Tests
     private readonly ProfileModel _profile = new ProfileModel() { FamilyName = "FN", GivenName = "GN", EntityId = 3, Email = "anemail@random.com", Phone = "123456789", Type = "" };
     private readonly AddressModel _address = new AddressModel() { EntityId = 3, AccountId = 3 };
 
-    [Fact]
+    [Theory]
     public async void Test_Repository_DeleteAsync()
     {
       using (var ctx = new AccountContext(Options))
@@ -40,7 +40,7 @@ namespace RVTR.Account.Testing.Tests
       }
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Repository_InsertAsync()
     {
       using (var ctx = new AccountContext(Options))
@@ -65,7 +65,7 @@ namespace RVTR.Account.Testing.Tests
       }
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Repository_SelectAsync()
     {
       using (var ctx = new AccountContext(Options))
@@ -96,7 +96,7 @@ namespace RVTR.Account.Testing.Tests
       }
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Repository_SelectAsync_ById()
     {
       using (var ctx = new AccountContext(Options))
@@ -127,7 +127,7 @@ namespace RVTR.Account.Testing.Tests
       }
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Repository_Update()
     {
       using (var ctx = new AccountContext(Options))

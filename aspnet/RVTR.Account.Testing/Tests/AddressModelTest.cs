@@ -38,7 +38,7 @@ namespace RVTR.Account.Testing.Tests
     /// <summary>
     /// Tests false if bad country name given
     /// </summary>
-    [Fact]
+    [Theory]
     public void Test_Create_AccountModel_BadCountry()
     {
       AddressModel address = new AddressModel()
@@ -63,7 +63,7 @@ namespace RVTR.Account.Testing.Tests
     /// <summary>
     /// Tests false if bad country zip code given
     /// </summary>
-    [Fact]
+    [Theory]
     public void Test_Create_AccountModel_BadPostCode()
     {
       AddressModel address = new AddressModel()
@@ -87,7 +87,7 @@ namespace RVTR.Account.Testing.Tests
     /// <summary>
     /// Tests false if bad state abbreviation given
     /// </summary>
-    [Fact]
+    [Theory]
     public void Test_Create_AccountModel_BadStateAbbr()
     {
       AddressModel address = new AddressModel()

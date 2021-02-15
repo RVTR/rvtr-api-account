@@ -36,7 +36,7 @@ namespace RVTR.Account.UnitTesting.Tests
       _controller = new PaymentController(_logger, _unitOfWork);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Delete()
     {
       var resultFail = await _controller.Delete(0);
@@ -46,7 +46,7 @@ namespace RVTR.Account.UnitTesting.Tests
       Assert.NotNull(resultPass);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Get()
     {
       var resultMany = await _controller.Get();
@@ -58,7 +58,7 @@ namespace RVTR.Account.UnitTesting.Tests
       Assert.NotNull(resultOne);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Post()
     {
       var resultPass = await _controller.Post(new PaymentModel());
@@ -66,7 +66,7 @@ namespace RVTR.Account.UnitTesting.Tests
       Assert.NotNull(resultPass);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Put()
     {
       var resultPass = await _controller.Put(new PaymentModel());

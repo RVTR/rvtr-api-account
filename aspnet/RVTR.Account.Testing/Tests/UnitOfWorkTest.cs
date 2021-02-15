@@ -6,7 +6,7 @@ namespace RVTR.Account.Testing.Tests
 {
   public class UnitOfWorkTest : DataTest
   {
-    [Fact]
+    [Theory]
     public async void Test_UnitOfWork_CommitAsync()
     {
       using var ctx = new AccountContext(Options);
