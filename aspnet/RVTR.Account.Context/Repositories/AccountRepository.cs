@@ -11,28 +11,30 @@ namespace RVTR.Account.Context.Repositories
   /// Represents the _Repository_ generic
   /// </summary>
   /// <typeparam name="TEntity"></typeparam>
-  public class AccountRepository : Repository<AccountModel>, IAccountRepository
+  public class AccountRepository
   {
-    public AccountRepository(AccountContext context) : base(context) { }
+    private readonly AccountContext _context;
+    public AccountRepository(AccountContext context)
+    {
+      _context = context;
+    }
 
-    public override async Task<AccountModel> SelectAsync(int id) => await Db
-      .Where(x => x.EntityID == id)
+    public async Task<AccountModel> Select(string email)
+    {
+      return await _context.Accounts
+      .Where(x => x.Email == email)
       .Include(x => x.Address)
       .Include(x => x.Profiles)
       .Include(x => x.Payments)
       .FirstOrDefaultAsync();
-
-    public override async Task<IEnumerable<AccountModel>> SelectAsync() => await Db
+    }
+    public async Task<IEnumerable<AccountModel>> SelectAll()
+    {
+      return await _context.Accounts
       .Include(x => x.Address)
       .Include(x => x.Profiles)
       .Include(x => x.Payments)
       .ToListAsync();
-
-    // Select an account by email instead of by ID, as is the case with SelectAsync(id)
-    public virtual async Task<AccountModel> SelectByEmailAsync(string email) => await Db
-      .Include(x => x.Address)
-      .Include(x => x.Profiles)
-      .Include(x => x.Payments)
-      .FirstOrDefaultAsync(x => x.Email == email);
+    }
   }
 }

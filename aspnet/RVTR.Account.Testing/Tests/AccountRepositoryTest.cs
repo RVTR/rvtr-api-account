@@ -1,45 +1,44 @@
-using RVTR.Account.Context;
-using RVTR.Account.Context.Repositories;
-using Xunit;
+// using RVTR.Account.Context;
+// using RVTR.Account.Context.Repositories;
+// using Xunit;
 
-namespace RVTR.Account.Testing.Tests
-{
-  public class AccountRepositoryTest : DataTest
-  {
-    [Fact]
-    public async void Test_Repository_SelectAsync()
-    {
-      using var ctx = new AccountContext(Options);
+// namespace RVTR.Account.Testing.Tests
+// {
+//   public class AccountRepositoryTest : DataTest
+//   {
+//     [Fact]
+//     public async void Test_Repository_SelectAsync()
+//     {
+//       using var ctx = new AccountContext(Options);
 
-      var accounts = new AccountRepository(ctx);
+//       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectAsync();
 
-      Assert.NotEmpty(actual);
-    }
+//       Assert.NotEmpty(actual);
+//     }
 
-    [Fact]
-    public async void Test_Repository_SelectAsync_ById()
-    {
-      using var ctx = new AccountContext(Options);
+//     [Fact]
+//     public async void Test_Repository_SelectAsync_ById()
+//     {
+//       using var ctx = new AccountContext(Options);
 
-      var accounts = new AccountRepository(ctx);
+//       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectAsync(1);
+//       var actual = await accounts.SelectAsync(1);
 
-      Assert.NotNull(actual);
-    }
+//       Assert.NotNull(actual);
+//     }
 
-    [Fact]
-    public async void Test_Repository_SelectByEmailAsync()
-    {
-      using var ctx = new AccountContext(Options);
+//     [Fact]
+//     public async void Test_Repository_SelectByEmailAsync()
+//     {
+//       using var ctx = new AccountContext(Options);
 
-      var accounts = new AccountRepository(ctx);
+//       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectByEmailAsync("ddowd97@gmail.com");
+//       var actual = await accounts.SelectByEmailAsync("ddowd97@gmail.com");
 
-      Assert.NotNull(actual);
-    }
-  }
-}
+//       Assert.NotNull(actual);
+//     }
+//   }
+// }

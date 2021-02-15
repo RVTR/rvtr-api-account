@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RVTR.Account.Domain.Interfaces;
 using RVTR.Account.Domain.Models;
 
@@ -8,24 +11,26 @@ namespace RVTR.Account.Context.Repositories
   /// <summary>
   /// Represents the _UnitOfWork_ repository
   /// </summary>
-  public class UnitOfWork : IUnitOfWork, IDisposable
+  public class UnitOfWork
   {
     private readonly AccountContext _context;
-    private bool _disposedValue;
-
-    public IAccountRepository Account { get; }
-    public IRepository<ProfileModel> Profile { get; }
-    public IRepository<AddressModel> Address { get; }
-    public IRepository<PaymentModel> Payment { get; }
+    private AccountRepository _accountRepository;
 
     public UnitOfWork(AccountContext context)
     {
       _context = context;
+    }
 
-      Account = new AccountRepository(context);
-      Profile = new Repository<ProfileModel>(context);
-      Address = new Repository<AddressModel>(context);
-      Payment = new Repository<PaymentModel>(context);
+    public AccountRepository AccountRepository
+    {
+      get
+      {
+        if(_accountRepository == null)
+        {
+          _accountRepository = new AccountRepository(_context);
+        }
+        return _accountRepository;
+      }
     }
 
     /// <summary>
@@ -33,23 +38,23 @@ namespace RVTR.Account.Context.Repositories
     /// </summary>
     /// <returns></returns>
     public async Task<int> CommitAsync() => await _context.SaveChangesAsync();
-
-    protected virtual void Dispose(bool disposing)
+    public async Task<List<T>> GetAll<T>() where T : class
     {
-      if (!_disposedValue)
-      {
-        if (disposing)
-        {
-          _context.Dispose();
-        }
-        _disposedValue = true;
-      }
+      return await Task.Run(()=>_context.Set<T>().ToList());
+    }
+    public async Task<T> Get<T>(string email) where T : class
+    {
+      return await Task.Run(()=>_context.Set<T>().Find(email));
+    }
+    public async Task Insert<T>(T obj) where T : class
+    {
+      await Task.Run(() =>_context.Set<T>().Add(obj));
+    }
+    public async Task Update<T>(T obj) where T : class
+    {
+      await Task.Run(() =>_context.Set<T>().Attach(obj));
+      _context.Entry(obj).State = EntityState.Modified;
     }
 
-    public void Dispose()
-    {
-      Dispose(disposing: true);
-      GC.SuppressFinalize(this);
-    }
   }
 }

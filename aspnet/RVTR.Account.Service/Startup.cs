@@ -63,7 +63,7 @@ namespace RVTR.Account.Service
       }, ServiceLifetime.Transient);
 
       services.AddScoped<ClientZipkinMiddleware>();
-      services.AddTransient<IUnitOfWork, UnitOfWork>();
+      services.AddScoped<UnitOfWork>();
       services.AddSwaggerGen();
       services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ClientSwaggerOptions>();
       services.AddControllers().AddNewtonsoftJson(options =>
