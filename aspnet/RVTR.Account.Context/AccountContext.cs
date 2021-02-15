@@ -27,25 +27,45 @@ namespace RVTR.Account.Context
         new AccountModel
         {
           EntityId = -1,
+<<<<<<< Updated upstream
           Name = "David Dowd",
+=======
+          FirstName = "David",
+          LastName = "Dowd",
+>>>>>>> Stashed changes
           Email = "ddowd97@gmail.com"
         },
         new AccountModel()
         {
           EntityId = 1,
+<<<<<<< Updated upstream
           Name = "JonnyCode",
+=======
+          FirstName = "Jonny",
+          LastName = "Code",
+>>>>>>> Stashed changes
           Email = "jonsledge39@gmail.com"
         },
         new AccountModel()
         {
           EntityId = 2,
+<<<<<<< Updated upstream
           Name = "Richard Noel",
+=======
+          FirstName = "Richard",
+          LastName = "Re",
+>>>>>>> Stashed changes
           Email = "richard.noel@revature.net"
         },
         new AccountModel()
         {
           EntityId = 3,
+<<<<<<< Updated upstream
           Name = "Mr. Sun",
+=======
+          FirstName = "Mr. Sun",
+          LastName = "ny Day",
+>>>>>>> Stashed changes
           Email = "sunzh95@gmail.com"
         }
       );

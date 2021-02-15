@@ -35,7 +35,7 @@ namespace RVTR.Account.Testing.Tests
     /// <summary>
     /// Tests for bad card number
     /// </summary>
-    [Fact]
+    [Theory]
     public void Test_Create_AccountModel_BadEmail()
     {
       PaymentModel payment = new PaymentModel()

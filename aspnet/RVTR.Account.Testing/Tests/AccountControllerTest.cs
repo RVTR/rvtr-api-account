@@ -37,7 +37,7 @@ namespace RVTR.Account.Testing.Tests
       _controller = new AccountController(_logger, _unitOfWork);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Delete()
     {
       var resultFail = await _controller.Delete("fake@email.com");
@@ -47,7 +47,7 @@ namespace RVTR.Account.Testing.Tests
       Assert.NotNull(resultPass);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Get()
     {
       var resultMany = await _controller.Get();
@@ -59,7 +59,7 @@ namespace RVTR.Account.Testing.Tests
       Assert.NotNull(resultOne);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Post()
     {
       var resultPass = await _controller.Post(new AccountModel());
@@ -67,20 +67,12 @@ namespace RVTR.Account.Testing.Tests
       Assert.NotNull(resultPass);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Put()
     {
       var resultPass = await _controller.Put(new AccountModel());
 
       Assert.NotNull(resultPass);
-    }
-
-    [Fact]
-    public async void Test_404_Response()
-    {
-      var result = await _controller.Get("fake@email.com");
-
-      Assert.IsType<NotFoundObjectResult>(result);
     }
   }
 }

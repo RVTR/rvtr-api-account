@@ -36,7 +36,7 @@ namespace RVTR.Account.Testing.Tests
       _controller = new AddressController(_logger, _unitOfWork);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Delete()
     {
       var resultFail = await _controller.Delete(0);
@@ -46,7 +46,7 @@ namespace RVTR.Account.Testing.Tests
       Assert.NotNull(resultPass);
     }
 
-    [Fact]
+    [Theory]
     public async void Test_Controller_Get()
     {
       var resultMany = await _controller.Get();

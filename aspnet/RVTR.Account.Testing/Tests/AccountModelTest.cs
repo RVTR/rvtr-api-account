@@ -38,7 +38,7 @@ namespace RVTR.Account.Testing.Tests
     /// Tests for an invalid email
     /// </summary>
     /// <param name="account"></param>
-    [Fact]
+    [Theory]
     public void Test_Create_AccountModel_BadEmail()
     {
       AccountModel account = new AccountModel("Jim", "abcd"); //bad email given
@@ -50,7 +50,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     /// <summary>
-    /// Tests for an invalid email
+    /// Tests for an invalid name
     /// </summary>
     /// <param name="account"></param>
     [Fact]
