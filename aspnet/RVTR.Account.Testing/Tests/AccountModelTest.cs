@@ -53,7 +53,7 @@ namespace RVTR.Account.Testing.Tests
     /// Tests for an invalid name
     /// </summary>
     /// <param name="account"></param>
-    [Fact]
+    [Theory]
     public void Test_Create_AccountModel_BadName()
     {
       AccountModel account = new AccountModel("jim", "abcd@gmail.com"); //bad name given (lower case first lettter)
