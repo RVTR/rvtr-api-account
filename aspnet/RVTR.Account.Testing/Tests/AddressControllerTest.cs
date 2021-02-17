@@ -37,6 +37,8 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(AddressControllerTest))]
+
     public async void Test_Controller_Delete()
     {
       var resultFail = await _controller.Delete(0);
@@ -47,6 +49,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(AddressControllerTest))]
     public async void Test_Controller_Get()
     {
       var resultMany = await _controller.Get();
@@ -59,6 +62,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(AddressControllerTest))]
     public async void Test_Controller_Post()
     {
       var resultPass = await _controller.Post(new AddressModel());
@@ -67,6 +71,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(AddressControllerTest))]
     public async void Test_Controller_Put()
     {
       var resultPass = await _controller.Put(new AddressModel());

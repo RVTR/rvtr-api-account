@@ -38,6 +38,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(AccountControllerTest))]
     public async void Test_Controller_Delete()
     {
       var resultFail = await _controller.Delete("fake@email.com");
@@ -48,6 +49,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(AccountControllerTest))]
     public async void Test_Controller_Get()
     {
       var resultMany = await _controller.Get();

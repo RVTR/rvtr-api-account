@@ -13,6 +13,9 @@ namespace RVTR.Account.Testing.Tests
     private readonly AddressModel _address = new AddressModel() { EntityId = 3, AccountId = 3 };
 
     [Theory]
+    [MemberData(nameof(_account))]
+    [MemberData(nameof(_profile))]
+    [MemberData(nameof(_address))]
     public async void Test_Repository_DeleteAsync()
     {
       using (var ctx = new AccountContext(Options))
@@ -41,6 +44,9 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(_account))]
+    [MemberData(nameof(_profile))]
+    [MemberData(nameof(_address))]
     public async void Test_Repository_InsertAsync()
     {
       using (var ctx = new AccountContext(Options))
@@ -66,6 +72,9 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(_account))]
+    [MemberData(nameof(_profile))]
+    [MemberData(nameof(_address))]
     public async void Test_Repository_SelectAsync()
     {
       using (var ctx = new AccountContext(Options))
@@ -97,6 +106,9 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(_account))]
+    [MemberData(nameof(_profile))]
+    [MemberData(nameof(_address))]
     public async void Test_Repository_SelectAsync_ById()
     {
       using (var ctx = new AccountContext(Options))
@@ -128,6 +140,9 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(_account))]
+    [MemberData(nameof(_profile))]
+    [MemberData(nameof(_address))]
     public async void Test_Repository_Update()
     {
       using (var ctx = new AccountContext(Options))

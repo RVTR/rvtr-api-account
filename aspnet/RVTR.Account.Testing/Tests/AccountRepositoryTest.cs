@@ -1,13 +1,15 @@
 using RVTR.Account.Context;
 using RVTR.Account.Context.Repositories;
+using RVTR.Account.Domain.Models;
 using Xunit;
 
 namespace RVTR.Account.Testing.Tests
 {
   public class AccountRepositoryTest : DataTest
   {
-    
+    private readonly AccountModel _account = new AccountModel() { EntityId = 3 };
     [Theory]
+    [MemberData(nameof(_account))]
     public async void Test_Repository_SelectAsync_ById()
     {
       using var ctx = new AccountContext(Options);
@@ -20,6 +22,7 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
+    [MemberData(nameof(_account))]
     public async void Test_Repository_SelectByEmailAsync()
     {
       using var ctx = new AccountContext(Options);

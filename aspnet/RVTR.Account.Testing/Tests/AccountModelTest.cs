@@ -39,6 +39,7 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     /// <param name="account"></param>
     [Theory]
+    [MemberData(nameof(Accounts))]
     public void Test_Create_AccountModel_BadEmail()
     {
       AccountModel account = new AccountModel("Jim", "abcd"); //bad email given
@@ -54,6 +55,7 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     /// <param name="account"></param>
     [Theory]
+    [MemberData(nameof(Accounts))]
     public void Test_Create_AccountModel_BadName()
     {
       AccountModel account = new AccountModel("jim", "abcd@gmail.com"); //bad name given (lower case first lettter)
