@@ -21,7 +21,6 @@ namespace RVTR.Account.Service.Controllers
   public class AccountController : ControllerBase
   {
     private readonly ILogger<AccountController> _logger;
-    // private readonly IUnitOfWork _unitOfWork;
     private readonly UnitOfWork _unitOfWork;
 
     /// <summary>
