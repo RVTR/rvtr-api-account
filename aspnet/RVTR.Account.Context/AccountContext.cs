@@ -65,6 +65,7 @@ namespace RVTR.Account.Context
           Email = "j@gmail.com",
           FamilyName = "Smith",
           GivenName = "John",
+          IsAccountHolder = true,
           Phone = "1234567891",
           Type = "Adult",
           AccountModelId = 1,
