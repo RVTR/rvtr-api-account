@@ -9,7 +9,6 @@
 // using RVTR.Account.Service.Controllers;
 // using Xunit;
 
-<<<<<<< HEAD
 // namespace RVTR.Account.Testing.Tests
 // {
 //   public class ProfileControllerTest
@@ -77,71 +76,3 @@
 //     }
 //   }
 // }
-=======
-namespace RVTR.Account.Testing.Tests
-{
-  public class ProfileControllerTest
-  {
-    // private readonly ProfileController _controller;
-    // private readonly ILogger<ProfileController> _logger;
-    // private readonly UnitOfWork _unitOfWork;
-
-    // public ProfileControllerTest()
-    // {
-    //   var loggerMock = new Mock<ILogger<ProfileController>>();
-    //   var unitOfWorkMock = new Mock<UnitOfWork>();
-
-    //   // unitOfWorkMock.Setup(m => m.Delete(0)).Throws(new Exception());
-    //   // unitOfWorkMock.Setup(m => m.Delete(1)).Returns(Task.CompletedTask);
-    //   // unitOfWorkMock.Setup(m => m.Insert(It.IsAny<ProfileModel>())).Returns(Task.CompletedTask);
-    //   // unitOfWorkMock.Setup(m => m.Get<ProfileModel>()).ReturnsAsync((IEnumerable<ProfileModel>)null);
-    //   // unitOfWorkMock.Setup(m => m.Get<ProfileModel>(0)).Throws(new Exception());
-    //   // unitOfWorkMock.Setup(m => m.Get<ProfileModel>(1)).ReturnsAsync((ProfileModel)null);
-    //   // unitOfWorkMock.Setup(m => m.Update(It.IsAny<ProfileModel>()));
-    //   // unitOfWorkMock.Setup(m => m.Profile).Returns(repositoryMock.Object);
-
-    //   _logger = loggerMock.Object;
-    //   _unitOfWork = unitOfWorkMock.Object;
-    //   _controller = new ProfileController(_logger, _unitOfWork);
-    // }
-
-    // [Fact]
-    // public async void Test_Controller_Delete()
-    // {
-    //   var resultFail = await _controller.Delete(0);
-    //   var resultPass = await _controller.Delete(1);
-
-    //   Assert.NotNull(resultFail);
-    //   Assert.NotNull(resultPass);
-    // }
-
-    // [Fact]
-    // public async void Test_Controller_Get()
-    // {
-    //   var resultMany = await _controller.Get();
-    //   var resultFail = await _controller.Get(-5);
-    //   var resultOne = await _controller.Get(-1);
-
-    //   Assert.NotNull(resultMany);
-    //   Assert.NotNull(resultFail);
-    //   Assert.NotNull(resultOne);
-    // }
-
-    // [Fact]
-    // public async void Test_Controller_Post()
-    // {
-    //   var resultPass = await _controller.Post(new ProfileModel());
-
-    //   Assert.NotNull(resultPass);
-    // }
-
-    // [Fact]
-    // public async void Test_Controller_Put()
-    // {
-    //   var resultPass = await _controller.Put(new ProfileModel());
-
-    //   Assert.NotNull(resultPass);
-    // }
-  }
-}
->>>>>>> 3fa9f2ccb4ccc132fabd01c490214c327bb4e495

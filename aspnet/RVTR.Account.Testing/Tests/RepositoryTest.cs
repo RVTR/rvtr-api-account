@@ -17,11 +17,7 @@
 //     {
 //       using (var ctx = new AccountContext(Options))
 //       {
-<<<<<<< HEAD
 //         var profiles = new Repository<ProfileModel>(ctx);
-=======
-//         var profiles = new UnitOfWorkDelete<ProfileModel>(ctx);
->>>>>>> 3fa9f2ccb4ccc132fabd01c490214c327bb4e495
 //         var profile = await ctx.Profiles.FirstAsync();
 //         await profiles.DeleteAsync(profile.EntityId);
 //         Assert.Equal(EntityState.Deleted, ctx.Entry(profile).State);
