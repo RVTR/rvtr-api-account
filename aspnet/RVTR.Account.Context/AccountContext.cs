@@ -24,7 +24,7 @@ namespace RVTR.Account.Context
       modelBuilder.Entity<ProfileModel>().HasKey(e => e.EntityId);
       modelBuilder.Entity<AccountModel>().HasData
       (
-        new AccountModel
+        new AccountModel()
         {
           EntityId = 1,
           Email = "j@gmail.com"
@@ -53,6 +53,19 @@ namespace RVTR.Account.Context
           PostalCode = "73301",
           StateProvince = "TX",
           Street = "101 Blume Avenue"
+        }
+      );
+      modelBuilder.Entity<ProfileModel>().HasData
+      (
+        new ProfileModel()
+        {
+          EntityId = 1,
+          AccountModelId = 1,
+          GivenName = "John",
+          FamilyName = "Smith",
+          Email = "j@gmail.com",
+          Phone = "123445679",
+          Type = "Adult"
         }
       );
     }
