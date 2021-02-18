@@ -16,12 +16,12 @@ namespace RVTR.Account.Domain.Models
 
     [Required(ErrorMessage = "First name required")]
     [MaxLength(50, ErrorMessage = "First name must be fewer than 50 characters.")]
-    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "First name can only use letters and cannot be empty.")]
+    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "First name can only use letters and cannot be an empty string.")]
     public string FirstName { get; set; }
 
     [Required(ErrorMessage = "Last name required")]
     [MaxLength(50, ErrorMessage = "Last name must be fewer than 50 characters.")]
-    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "Last name can only use letters and cannot be empty.")]
+    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "Last name can only use letters and cannnot be an empty string.")]
     public string LastName { get; set; }
     public List<PaymentModel> Payments { get; set; }
     public List<ProfileModel> Profiles { get; set; }
