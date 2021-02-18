@@ -27,7 +27,7 @@ namespace RVTR.Account.Context
         new AccountModel()
         {
           EntityId = 1,
-          Email = "ddowd97@gmail.com"
+          Email = "jsmith@gmail.com"
         }
       );
       modelBuilder.Entity<PaymentModel>().HasData
