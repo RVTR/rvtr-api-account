@@ -21,14 +21,14 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
-    [InlineData("ddowd97@gmail.com")]
+    [InlineData("jsmith@gmail.com")]
     public async void Test_Repository_SelectByEmailAsync(string email)
     {
       using var ctx = new AccountContext(Options);
 
       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectByEmailAsync("ddowd97@gmail.com");
+      var actual = await accounts.SelectByEmailAsync(email);
 
       Assert.NotNull(actual);
     }
