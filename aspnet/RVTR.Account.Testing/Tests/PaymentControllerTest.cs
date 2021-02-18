@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
+using RVTR.Account.Context.Repositories;
 using RVTR.Account.Domain.Interfaces;
 using RVTR.Account.Domain.Models;
 using RVTR.Account.Service.Controllers;
@@ -14,7 +15,7 @@ namespace RVTR.Account.UnitTesting.Tests
   {
     private readonly PaymentController _controller;
     private readonly ILogger<PaymentController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly UnitOfWork _unitOfWork;
 
     public PaymentControllerTest()
     {
@@ -32,7 +33,7 @@ namespace RVTR.Account.UnitTesting.Tests
       unitOfWorkMock.Setup(m => m.Payment).Returns(repositoryMock.Object);
 
       _logger = loggerMock.Object;
-      _unitOfWork = unitOfWorkMock.Object;
+      _unitOfWork = (UnitOfWork)unitOfWorkMock.Object;
       _controller = new PaymentController(_logger, _unitOfWork);
     }
 

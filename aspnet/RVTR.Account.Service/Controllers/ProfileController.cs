@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RVTR.Account.Context.Repositories;
 using RVTR.Account.Domain.Interfaces;
 using RVTR.Account.Domain.Models;
 using RVTR.Account.Service.ResponseObjects;
@@ -20,14 +21,14 @@ namespace RVTR.Account.Service.Controllers
   public class ProfileController : ControllerBase
   {
     private readonly ILogger<ProfileController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly UnitOfWork _unitOfWork;
 
     /// <summary>
     /// The _Profile Controller_ constructor
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="unitOfWork"></param>
-    public ProfileController(ILogger<ProfileController> logger, IUnitOfWork unitOfWork)
+    public ProfileController(ILogger<ProfileController> logger, UnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
@@ -47,7 +48,8 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Deleting a profile by its ID number...");
 
-        await _unitOfWork.Profile.DeleteAsync(id);
+        var tempProfile = await _unitOfWork.Get<ProfileModel>(id);
+        await _unitOfWork.Delete<ProfileModel>(tempProfile);
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation($"Deleted the profile with ID number {id}.");
@@ -72,7 +74,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogInformation($"Retrieved the profiles.");
 
-      return Ok(await _unitOfWork.Profile.SelectAsync());
+      return Ok(await _unitOfWork.GetAll<ProfileModel>());
     }
 
     /// <summary>
@@ -89,8 +91,7 @@ namespace RVTR.Account.Service.Controllers
 
       _logger.LogDebug("Getting a profile by its ID number...");
 
-      profileModel = await _unitOfWork.Profile.SelectAsync(id);
-
+      profileModel = await _unitOfWork.Get<ProfileModel>(id);
 
       if (profileModel is ProfileModel theProfile)
       {
@@ -115,7 +116,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogDebug("Adding a profile...");
 
-      await _unitOfWork.Profile.InsertAsync(profile);
+      await _unitOfWork.Insert<ProfileModel>(profile);
       await _unitOfWork.CommitAsync();
 
       _logger.LogInformation($"Successfully added the profile {profile}.");
@@ -137,7 +138,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Updating a profile...");
 
-        _unitOfWork.Profile.Update(profile);
+        await _unitOfWork.Update<ProfileModel>(profile);
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation($"Successfully updated the profile {profile}.");

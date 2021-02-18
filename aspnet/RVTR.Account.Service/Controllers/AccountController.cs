@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RVTR.Account.Context.Repositories;
 using RVTR.Account.Domain.Interfaces;
 using RVTR.Account.Domain.Models;
 using RVTR.Account.Service.ResponseObjects;
@@ -20,14 +21,15 @@ namespace RVTR.Account.Service.Controllers
   public class AccountController : ControllerBase
   {
     private readonly ILogger<AccountController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+    // private readonly IUnitOfWork _unitOfWork;
+    private readonly UnitOfWork _unitOfWork;
 
     /// <summary>
     ///
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="unitOfWork"></param>
-    public AccountController(ILogger<AccountController> logger, IUnitOfWork unitOfWork)
+    public AccountController(ILogger<AccountController> logger, UnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
@@ -47,10 +49,10 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Deleting an account by its email...");
 
-        // Instead of directly deleting by passed ID, search for account (& it's ID) from passed email first
-        AccountModel accountModel = await _unitOfWork.Account.SelectByEmailAsync(email);
+        // Delete By Object
+        AccountModel accountModel = await _unitOfWork.AccountRepository.Select(email);
 
-        await _unitOfWork.Account.DeleteAsync(accountModel.EntityID);
+        await _unitOfWork.Delete<AccountModel>(accountModel);
         await _unitOfWork.CommitAsync();
 
 
@@ -76,7 +78,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogInformation($"Retrieved the accounts.");
 
-      return Ok(await _unitOfWork.Account.SelectAsync());
+      return Ok(await _unitOfWork.AccountRepository.SelectAll());
 
     }
 
@@ -92,7 +94,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogDebug("Getting an account by its email...");
 
-      AccountModel accountModel = await _unitOfWork.Account.SelectByEmailAsync(email);
+      AccountModel accountModel = await _unitOfWork.AccountRepository.Select(email);
 
       if (accountModel is AccountModel theAccount)
       {
@@ -118,7 +120,7 @@ namespace RVTR.Account.Service.Controllers
 
       _logger.LogDebug("Adding an account...");
 
-      await _unitOfWork.Account.InsertAsync(account);
+      await _unitOfWork.Insert<AccountModel>(account);
       await _unitOfWork.CommitAsync();
 
       _logger.LogInformation($"Successfully added the account {account}.");
@@ -141,7 +143,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Updating an account...");
 
-        _unitOfWork.Account.Update(account);
+        await _unitOfWork.Update<AccountModel>(account);
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation($"Successfully updated the account {account}.");

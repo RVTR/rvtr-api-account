@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RVTR.Account.Context.Repositories;
 using RVTR.Account.Domain.Interfaces;
 using RVTR.Account.Domain.Models;
 using RVTR.Account.Service.ResponseObjects;
@@ -20,14 +21,14 @@ namespace RVTR.Account.Service.Controllers
   public class PaymentController : ControllerBase
   {
     private readonly ILogger<PaymentController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly UnitOfWork _unitOfWork;
 
     /// <summary>
     /// The _Payment Controller_ constructor
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="unitOfWork"></param>
-    public PaymentController(ILogger<PaymentController> logger, IUnitOfWork unitOfWork)
+    public PaymentController(ILogger<PaymentController> logger, UnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
@@ -47,7 +48,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Deleting a payment by its ID number...");
 
-        await _unitOfWork.Payment.DeleteAsync(id);
+        await _unitOfWork.Delete<PaymentModel>(await _unitOfWork.Get<PaymentModel>(id));
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation($"Deleted the payment with ID number {id}.");
@@ -73,7 +74,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogInformation($"Retrieved the payments.");
 
-      return Ok(await _unitOfWork.Payment.SelectAsync());
+      return Ok(await _unitOfWork.GetAll<PaymentModel>());
     }
 
     /// <summary>
@@ -90,8 +91,7 @@ namespace RVTR.Account.Service.Controllers
 
       _logger.LogDebug("Getting a payment by its ID number...");
 
-      paymentModel = await _unitOfWork.Payment.SelectAsync(id);
-
+      paymentModel = await _unitOfWork.Get<PaymentModel>(id);
 
       if (paymentModel is PaymentModel thePayment)
       {
@@ -116,7 +116,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogDebug("Adding a payment...");
 
-      await _unitOfWork.Payment.InsertAsync(payment);
+      await _unitOfWork.Insert<PaymentModel>(payment);
       await _unitOfWork.CommitAsync();
 
       _logger.LogInformation($"Successfully added the payment {payment}.");
@@ -139,7 +139,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Updating a payment...");
 
-        _unitOfWork.Payment.Update(payment);
+        await _unitOfWork.Update(payment);
         await _unitOfWork.CommitAsync();
 
 
