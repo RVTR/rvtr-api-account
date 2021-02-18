@@ -27,8 +27,6 @@ namespace RVTR.Account.Context
         new AccountModel
         {
           EntityId = 1,
-          FirstName = "John",
-          LastName = "Smith",
           Email = "j@gmail.com"
         }
       );
@@ -55,21 +53,6 @@ namespace RVTR.Account.Context
           PostalCode = "73301",
           StateProvince = "TX",
           Street = "101 Blume Avenue"
-        }
-      );
-      modelBuilder.Entity<ProfileModel>().HasData
-      (
-        new ProfileModel()
-        {
-          EntityId = 1,
-          Email = "j@gmail.com",
-          FamilyName = "Smith",
-          GivenName = "John",
-          IsAccountHolder = true,
-          Phone = "1234567891",
-          Type = "Adult",
-          AccountModelId = 1,
-          ImageUri = "https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=Platinum&facialHairType=BeardLight&facialHairColor=Platinum&clotheType=CollarSweater&clotheColor=PastelYellow&eyeType=Default&eyebrowType=Angry&mouthType=Twinkle&skinColor=Brown"
         }
       );
     }

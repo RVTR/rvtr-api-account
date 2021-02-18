@@ -15,10 +15,11 @@ namespace RVTR.Account.Testing.Tests
         {
           EntityId = 0,
           Address = new AddressModel(),
-          FirstName = "Davis",
-          LastName = "Greg",
           Payments = new List<PaymentModel>(),
-          Profiles = new List<ProfileModel>(),
+          Profiles = new List<ProfileModel>
+            {
+              new ProfileModel("John", "Smith", "test@gmail.com", true)
+            },
           Email = "test@gmail.com"
         }
       }
@@ -34,7 +35,6 @@ namespace RVTR.Account.Testing.Tests
       Assert.True(actual);
     }
 
-
     /// <summary>
     /// Tests for an invalid email
     /// </summary>
@@ -42,22 +42,7 @@ namespace RVTR.Account.Testing.Tests
     [Fact]
     public void Test_Create_AccountModel_BadEmail()
     {
-      AccountModel account = new AccountModel("Jim", "abcd","abc@gmail.com"); //bad email given
-
-      var validationContext = new ValidationContext(account);
-      var actual = Validator.TryValidateObject(account, validationContext, null, true);
-
-      Assert.False(actual);
-    }
-
-    /// <summary>
-    /// Tests for an invalid email
-    /// </summary>
-    /// <param name="account"></param>
-    [Fact]
-    public void Test_Create_AccountModel_BadName()
-    {
-      AccountModel account = new AccountModel("jim", "abcd@gmail.com","abc@gmail.com"); //bad name given (lower case first lettter)
+      AccountModel account = new AccountModel("Jim", "abcd"," "); //empty string given for email
 
       var validationContext = new ValidationContext(account);
       var actual = Validator.TryValidateObject(account, validationContext, null, true);
@@ -83,7 +68,5 @@ namespace RVTR.Account.Testing.Tests
 
       Assert.Empty(account.Validate(validationContext));
     }
-
-
   }
 }

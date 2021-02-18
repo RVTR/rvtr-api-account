@@ -9,7 +9,7 @@ namespace RVTR.Account.Domain.Models
   public class ProfileModel : AEntity, IValidatableObject
   {
 
-    public bool IsAccountHolder { get; set; }
+    public bool IsAccountHolder { get; }
 
     [Required(ErrorMessage = "Email address required")]
     [EmailAddress(ErrorMessage = "must be a real email address.")]
@@ -17,12 +17,12 @@ namespace RVTR.Account.Domain.Models
 
     [Required(ErrorMessage = "Family name required")]
     [MaxLength(50, ErrorMessage = "Max length of 50 characters")]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
+    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "Family name can only use letters and cannot be an empty string.")]
     public string FamilyName { get; set; }
 
     [Required(ErrorMessage = "Given name name required")]
     [MaxLength(50, ErrorMessage = "Max length of 50 characters")]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
+    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "Given name can only use letters and cannot be an empty string.")]
     public string GivenName { get; set; }
 
     [Required(ErrorMessage = "Phone number required")]
@@ -65,21 +65,9 @@ namespace RVTR.Account.Domain.Models
     /// <returns></returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-      if (string.IsNullOrEmpty(Email))
+      if (GivenName == FamilyName)
       {
-        yield return new ValidationResult("Email cannot be null.");
-      }
-      if (string.IsNullOrEmpty(FamilyName))
-      {
-        yield return new ValidationResult("familyName cannot be null.");
-      }
-      if (string.IsNullOrEmpty(GivenName))
-      {
-        yield return new ValidationResult("givenName cannot be null.");
-      }
-      if (string.IsNullOrEmpty(Phone))
-      {
-        yield return new ValidationResult("Phone cannot be null.");
+        yield return new ValidationResult("Given name and Family name can't be the same.");
       }
     }
   }
