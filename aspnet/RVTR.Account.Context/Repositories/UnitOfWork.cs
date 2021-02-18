@@ -42,10 +42,6 @@ namespace RVTR.Account.Context.Repositories
     {
       return await Task.Run(()=>_context.Set<T>().ToList());
     }
-    public async Task<T> Get<T>(string email) where T : class
-    {
-      return await Task.Run(()=>_context.Set<T>().Find(email));
-    }
     public async Task<T> Get<T>(int id) where T : class
     {
       return await Task.Run(()=>_context.Set<T>().Find(id));

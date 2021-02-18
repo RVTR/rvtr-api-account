@@ -36,5 +36,6 @@ namespace RVTR.Account.Context.Repositories
       .Include(x => x.Payments)
       .ToListAsync();
     }
+
   }
 }
