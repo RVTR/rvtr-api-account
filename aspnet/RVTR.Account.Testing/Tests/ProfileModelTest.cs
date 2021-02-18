@@ -39,9 +39,9 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     [Theory]
     [MemberData(nameof(Profiles))]
-    public void Test_Create_AccountModel_BadEmail()
+    public void Test_Create_AccountModel_BadEmail(ProfileModel profile)
     {
-      ProfileModel profile = new ProfileModel()
+      profile = new ProfileModel()
       {
         EntityId = 0,
         Email = "email@email.com",

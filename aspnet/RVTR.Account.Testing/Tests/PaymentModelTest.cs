@@ -37,9 +37,9 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     [Theory]
     [MemberData(nameof(Payments))]
-    public void Test_Create_AccountModel_BadEmail()
+    public void Test_Create_AccountModel_BadEmail(PaymentModel payment)
     {
-      PaymentModel payment = new PaymentModel()
+      payment = new PaymentModel()
       {
         EntityId = 0,
         CardName = "Name",

@@ -15,7 +15,22 @@ namespace RVTR.Account.Testing.Tests
     private readonly ProfileController _controller;
     private readonly ILogger<ProfileController> _logger;
     private readonly IUnitOfWork _unitOfWork;
-
+    public static readonly IEnumerable<object[]> Profiles = new List<object[]>
+    {
+      new object[]
+      {
+        new ProfileModel()
+        {
+          EntityId = 0,
+          Email = "email@email.com",
+          FamilyName = "Family",
+          GivenName = "Given",
+          Phone = "1234567890",
+          Type = "Adult",
+          AccountModelId = 0
+        }
+      }
+    };
     public ProfileControllerTest()
     {
       var loggerMock = new Mock<ILogger<ProfileController>>();
@@ -37,23 +52,25 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
-    [MemberData(nameof(ProfileControllerTest))]
-    public async void Test_Controller_Delete()
+    [InlineData(0)]
+    [InlineData(1)]
+    public async void Test_Controller_Delete(int id)
     {
-      var resultFail = await _controller.Delete(0);
-      var resultPass = await _controller.Delete(1);
+      var resultFail = await _controller.Delete(id);
+      var resultPass = await _controller.Delete(id);
 
       Assert.NotNull(resultFail);
       Assert.NotNull(resultPass);
     }
 
     [Theory]
-    [MemberData(nameof(ProfileControllerTest))]
-    public async void Test_Controller_Get()
+    [InlineData(-5)]
+    [InlineData(-1)]
+    public async void Test_Controller_Get(int id)
     {
       var resultMany = await _controller.Get();
-      var resultFail = await _controller.Get(-5);
-      var resultOne = await _controller.Get(-1);
+      var resultFail = await _controller.Get(id);
+      var resultOne = await _controller.Get(id);
 
       Assert.NotNull(resultMany);
       Assert.NotNull(resultFail);
@@ -61,8 +78,8 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
-    [MemberData(nameof(ProfileControllerTest))]
-    public async void Test_Controller_Post()
+    [MemberData(nameof(Profiles))]
+    public async void Test_Controller_Post(ProfileModel profile)
     {
       var resultPass = await _controller.Post(new ProfileModel());
 
@@ -70,8 +87,8 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
-    [MemberData(nameof(ProfileControllerTest))]
-    public async void Test_Controller_Put()
+    [MemberData(nameof(Profiles))]
+    public async void Test_Controller_Put(ProfileModel profile)
     {
       var resultPass = await _controller.Put(new ProfileModel());
 

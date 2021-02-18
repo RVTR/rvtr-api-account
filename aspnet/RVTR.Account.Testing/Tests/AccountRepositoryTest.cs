@@ -7,23 +7,22 @@ namespace RVTR.Account.Testing.Tests
 {
   public class AccountRepositoryTest : DataTest
   {
-    private readonly AccountModel _account = new AccountModel() { EntityId = 3 };
     [Theory]
-    [MemberData(nameof(_account))]
-    public async void Test_Repository_SelectAsync_ById()
+    [InlineData(1)]
+    public async void Test_Repository_SelectAsync_ById(int id)
     {
       using var ctx = new AccountContext(Options);
 
       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectAsync(1);
+      var actual = await accounts.SelectAsync(id);
 
       Assert.NotNull(actual);
     }
 
     [Theory]
-    [MemberData(nameof(_account))]
-    public async void Test_Repository_SelectByEmailAsync()
+    [InlineData("ddowd97@gmail.com")]
+    public async void Test_Repository_SelectByEmailAsync(string email)
     {
       using var ctx = new AccountContext(Options);
 

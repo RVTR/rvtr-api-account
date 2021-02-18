@@ -39,10 +39,10 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     /// <param name="account"></param>
     [Theory]
-    [MemberData(nameof(Accounts))]
-    public void Test_Create_AccountModel_BadEmail()
+    [InlineData("Jim", "abcd")]
+    public void Test_Create_AccountModel_BadEmail(string name, string email)
     {
-      AccountModel account = new AccountModel("Jim", "abcd"); //bad email given
+      AccountModel account = new AccountModel(name, email); //bad email given
 
       var validationContext = new ValidationContext(account);
       var actual = Validator.TryValidateObject(account, validationContext, null, true);
@@ -55,10 +55,10 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     /// <param name="account"></param>
     [Theory]
-    [MemberData(nameof(Accounts))]
-    public void Test_Create_AccountModel_BadName()
+    [InlineData("jim", "abcd@gmail.com")]
+    public void Test_Create_AccountModel_BadName(string name, string email)
     {
-      AccountModel account = new AccountModel("jim", "abcd@gmail.com"); //bad name given (lower case first lettter)
+      AccountModel account = new AccountModel(name, email); //bad name given (lower case first lettter)
 
       var validationContext = new ValidationContext(account);
       var actual = Validator.TryValidateObject(account, validationContext, null, true);

@@ -40,9 +40,9 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     [Theory]
     [MemberData(nameof(Addresses))]
-    public void Test_Create_AccountModel_BadCountry()
+    public void Test_Create_AccountModel_BadCountry(AddressModel address)
     {
-      AddressModel address = new AddressModel()
+      address = new AddressModel()
       {
         EntityId = 0,
         City = "City",
@@ -66,9 +66,9 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     [Theory]
     [MemberData(nameof(Addresses))]
-    public void Test_Create_AccountModel_BadPostCode()
+    public void Test_Create_AccountModel_BadPostCode(AddressModel address)
     {
-      AddressModel address = new AddressModel()
+      address = new AddressModel()
       {
         EntityId = 0,
         City = "City",
@@ -91,9 +91,9 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     [Theory]
     [MemberData(nameof(Addresses))]
-    public void Test_Create_AccountModel_BadStateAbbr()
+    public void Test_Create_AccountModel_BadStateAbbr(AddressModel address)
     {
-      AddressModel address = new AddressModel()
+      address = new AddressModel()
       {
         EntityId = 0,
         City = "City",
