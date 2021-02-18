@@ -7,37 +7,23 @@ namespace RVTR.Account.Testing.Tests
   public class AccountRepositoryTest : DataTest
   {
     [Fact]
-    public async void Test_Repository_SelectAsync()
+    public void Test_Repository_Select()
     {
       using var ctx = new AccountContext(Options);
 
       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectAsync();
-
-      Assert.NotEmpty(actual);
+      Assert.NotNull(accounts.Select("ddowd97@gmail.com"));
     }
 
     [Fact]
-    public async void Test_Repository_SelectAsync_ById()
+    public async void Test_Repository_SelectAll()
     {
       using var ctx = new AccountContext(Options);
 
       var accounts = new AccountRepository(ctx);
 
-      var actual = await accounts.SelectAsync(1);
-
-      Assert.NotNull(actual);
-    }
-
-    [Fact]
-    public async void Test_Repository_SelectByEmailAsync()
-    {
-      using var ctx = new AccountContext(Options);
-
-      var accounts = new AccountRepository(ctx);
-
-      var actual = await accounts.SelectByEmailAsync("ddowd97@gmail.com");
+      var actual = await accounts.SelectAll();
 
       Assert.NotNull(actual);
     }
