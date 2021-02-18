@@ -116,7 +116,7 @@ jobs:
 
   pack:
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
     name: pack_aspnet
     needs: [analyze]
     runs-on: ubuntu-20.04
@@ -129,42 +129,37 @@ jobs:
           name: drop
           path: drop
       - name: docker_login
-        run: echo ${GITHUB_TOKEN} | docker login --username ${GITHUB_ACTOR} --password-stdin docker.pkg.github.com
+        run: echo ${REGISTRY_TOKEN} | docker login --username ${GITHUB_ACTOR} --password-stdin ghcr.io
       - name: docker_build
         run: docker image build --file .docker/pipeline.dockerfile --tag account drop
       - if: startsWith(github.ref, 'refs/heads/main')
         name: docker_push_head
         run: |
-          docker image tag account docker.pkg.github.com/rvtr/rvtrx-api-account/account:master-aspnet-rest
-          docker image push docker.pkg.github.com/rvtr/rvtrx-api-account/account:master-aspnet-rest
+          docker image tag account ghcr.io/rvtr/rvtrx-api-account:main-aspnet-rest
+          docker image push ghcr.io/rvtr/rvtrx-api-account:main-aspnet-rest
       - if: startsWith(github.ref, 'refs/tags/')
         name: docker_push
         run: |
-          docker image tag account docker.pkg.github.com/rvtr/rvtrx-api-account/account:aspnet-rest
-          docker image push docker.pkg.github.com/rvtr/rvtrx-api-account/account:aspnet-rest
+          docker image tag account ghcr.io/rvtr/rvtrx-api-account:aspnet-rest
+          docker image push ghcr.io/rvtr/rvtrx-api-account:aspnet-rest
       - name: docker_logout
         run: docker logout
 
   deploy:
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
     needs: pack
     runs-on: ubuntu-20.04
     steps:
       - name: actions_checkout
         uses: actions/checkout@v2.3.4
       - name: az_login
-        run: az login --password ${AZURE_CLIENT_SECRET} --service-principal --tenant ${AZURE_TENANT_ID} --username ${AZURE_CLIENT_ID}
-      - name: az_aks
-        run: az aks get-credentials --name rvtr-k8s-main --overwrite-existing --resource-group rvtr-grp-main
-      - name: kubectl_apply
-        run: kubectl apply --filename .kubernetes/
-      - name: kubectl_rollout
-        run: kubectl rollout restart --filename .kubernetes/k8s_deployment.yaml
-      - name: az_logout
-        run: az logout
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: az_webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: campgroundaccountapi
+          configuration-file: .docker/pipeline_compose.yaml
 
 name: release
 

@@ -13,7 +13,7 @@ namespace RVTR.Account.Testing.Tests
       {
         new ProfileModel()
         {
-          EntityID = 0,
+          EntityId = 0,
           Email = "email@email.com",
           FamilyName = "Family",
           GivenName = "Given",
@@ -42,7 +42,7 @@ namespace RVTR.Account.Testing.Tests
     {
       ProfileModel profile = new ProfileModel()
       {
-        EntityID = 0,
+        EntityId = 0,
         Email = "email@email.com",
         FamilyName = "Family",
         GivenName = "Given",

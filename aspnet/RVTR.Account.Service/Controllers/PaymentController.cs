@@ -152,7 +152,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogWarning($"This payment does not exist.");
 
-        return NotFound(new ErrorObject($"Payment with ID number {payment.EntityID} does not exist"));
+        return NotFound(new ErrorObject($"Payment with ID number {payment.EntityId} does not exist"));
       }
     }
 

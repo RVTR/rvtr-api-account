@@ -149,7 +149,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogWarning($"This profile does not exist.");
 
-        return NotFound(new ErrorObject($"Profile with ID number {profile.EntityID} does not exist."));
+        return NotFound(new ErrorObject($"Profile with ID number {profile.EntityId} does not exist."));
       }
 
     }

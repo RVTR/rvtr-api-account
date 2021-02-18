@@ -151,7 +151,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogWarning($"This address does not exist.");
 
-        return NotFound(new ErrorObject($"Address with ID number {address.EntityID} does not exist."));
+        return NotFound(new ErrorObject($"Address with ID number {address.EntityId} does not exist."));
 
       }
 

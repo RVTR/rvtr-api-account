@@ -13,7 +13,7 @@ namespace RVTR.Account.Testing.Tests
       {
         new AddressModel()
         {
-          EntityID = 0,
+          EntityId = 0,
           City = "City",
           Country = "USA",
           PostalCode = "11111",
@@ -43,7 +43,7 @@ namespace RVTR.Account.Testing.Tests
     {
       AddressModel address = new AddressModel()
       {
-        EntityID = 0,
+        EntityId = 0,
         City = "City",
         Country = "USAD", //Bad country name
         PostalCode = "11111",
@@ -68,7 +68,7 @@ namespace RVTR.Account.Testing.Tests
     {
       AddressModel address = new AddressModel()
       {
-        EntityID = 0,
+        EntityId = 0,
         City = "City",
         Country = "USA",
         PostalCode = "abc", //Bad post code
@@ -92,7 +92,7 @@ namespace RVTR.Account.Testing.Tests
     {
       AddressModel address = new AddressModel()
       {
-        EntityID = 0,
+        EntityId = 0,
         City = "City",
         Country = "USA",
         PostalCode = "11111",

@@ -155,7 +155,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogWarning($"This account does not exist.");
 
-        return NotFound(new ErrorObject($"Account with ID number {account.EntityID} does not exist"));
+        return NotFound(new ErrorObject($"Account with ID number {account.EntityId} does not exist"));
       }
 
     }
