@@ -66,5 +66,19 @@ namespace RVTR.Account.Testing.Tests
 
       Assert.Empty(profile.Validate(validationContext));
     }
+
+    /// <summary>
+    /// Tests for an invalid name
+    /// </summary>
+    [Fact]
+    public void Test_Profile_BadName()
+    {
+      AccountModel account = new AccountModel("jim", " ","abc@gmail.com"); //bad name given (empty string for last name)
+
+      var validationContext = new ValidationContext(account.Profiles[0]);
+      var actual = Validator.TryValidateObject(account.Profiles[0], validationContext, null, true);
+
+      Assert.False(actual);
+    }
   }
 }

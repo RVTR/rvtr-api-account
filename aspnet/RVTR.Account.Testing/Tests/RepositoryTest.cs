@@ -8,9 +8,9 @@ namespace RVTR.Account.Testing.Tests
 {
   public class RepositoryTest : DataTest
   {
-    private readonly AccountModel _account = new AccountModel() { EntityId = 3 };
-    private readonly ProfileModel _profile = new ProfileModel() { FamilyName = "FN", GivenName = "GN", EntityId = 3, Email = "anemail@random.com", Phone = "123456789", Type = "" };
-    private readonly AddressModel _address = new AddressModel() { EntityId = 3, AccountId = 3 };
+    private readonly AccountModel _account = new AccountModel() { EntityId = 1, Email = "jsmith@gmail.com" };
+    private readonly ProfileModel _profile = new ProfileModel() { FamilyName = "Smith", GivenName = "John", EntityId = 1, Email = "jsmith@gmail.com", Phone = "123456789", Type = "Adult" };
+    private readonly AddressModel _address = new AddressModel() { EntityId = 1, AccountId = 1 };
 
     [Theory]
     [InlineData(3)]
@@ -130,21 +130,9 @@ namespace RVTR.Account.Testing.Tests
     }
 
     [Theory]
-    [InlineData("name", "email", "Denver")]
-    public async void Test_Repository_Update(string name, string email, string city)
+    [InlineData("email", "Denver")]
+    public async void Test_Repository_Update(string email, string city)
     {
-      using (var ctx = new AccountContext(Options))
-      {
-        var accounts = new Repository<AccountModel>(ctx);
-        var account = await ctx.Accounts.FirstAsync();
-
-        account.Name = name;
-        accounts.Update(account);
-
-        var result = ctx.Accounts.Find(account.EntityId);
-        Assert.Equal(account.Name, result.Name);
-        Assert.Equal(EntityState.Modified, ctx.Entry(result).State);
-      }
 
       using (var ctx = new AccountContext(Options))
       {
