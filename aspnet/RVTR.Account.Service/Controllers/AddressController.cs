@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RVTR.Account.Context.Repositories;
 using RVTR.Account.Domain.Interfaces;
 using RVTR.Account.Domain.Models;
 using RVTR.Account.Service.ResponseObjects;
@@ -20,14 +21,14 @@ namespace RVTR.Account.Service.Controllers
   public class AddressController : ControllerBase
   {
     private readonly ILogger<AddressController> _logger;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly UnitOfWork _unitOfWork;
 
     /// <summary>
     /// The _Address Component_ constructor
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="unitOfWork"></param>
-    public AddressController(ILogger<AddressController> logger, IUnitOfWork unitOfWork)
+    public AddressController(ILogger<AddressController> logger, UnitOfWork unitOfWork)
     {
       _logger = logger;
       _unitOfWork = unitOfWork;
@@ -47,7 +48,8 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Deleting an address by its ID number...");
 
-        await _unitOfWork.Address.DeleteAsync(id);
+        var tempAddress = await _unitOfWork.Get<AddressModel>(id);
+        await _unitOfWork.Delete<AddressModel>(tempAddress);
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation($"Deleted the address with ID number {id}.");
@@ -72,7 +74,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogInformation($"Retrieved the addresses.");
 
-      return Ok(await _unitOfWork.Address.SelectAsync());
+      return Ok(await _unitOfWork.GetAll<AddressModel>());
     }
 
     /// <summary>
@@ -89,7 +91,7 @@ namespace RVTR.Account.Service.Controllers
 
       _logger.LogDebug("Getting an address by its ID number...");
 
-      addressModel = await _unitOfWork.Address.SelectAsync(id);
+      addressModel = await _unitOfWork.Get<AddressModel>(id);
 
 
       if (addressModel is AddressModel theAddress)
@@ -115,7 +117,7 @@ namespace RVTR.Account.Service.Controllers
     {
       _logger.LogDebug("Adding an address...");
 
-      await _unitOfWork.Address.InsertAsync(address);
+      await _unitOfWork.Insert<AddressModel>(address);
       await _unitOfWork.CommitAsync();
 
       _logger.LogInformation($"Successfully added the address {address}.");
@@ -137,7 +139,7 @@ namespace RVTR.Account.Service.Controllers
       {
         _logger.LogDebug("Updating an address...");
 
-        _unitOfWork.Address.Update(address);
+        await _unitOfWork.Update<AddressModel>(address);
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation($"Successfully updated the address {address}.");

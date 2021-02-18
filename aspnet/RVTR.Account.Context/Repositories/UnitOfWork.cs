@@ -46,6 +46,10 @@ namespace RVTR.Account.Context.Repositories
     {
       return await Task.Run(()=>_context.Set<T>().Find(email));
     }
+    public async Task<T> Get<T>(int id) where T : class
+    {
+      return await Task.Run(()=>_context.Set<T>().Find(id));
+    }
     public async Task Insert<T>(T obj) where T : class
     {
       await Task.Run(() =>_context.Set<T>().Add(obj));
@@ -54,6 +58,10 @@ namespace RVTR.Account.Context.Repositories
     {
       await Task.Run(() =>_context.Set<T>().Attach(obj));
       _context.Entry(obj).State = EntityState.Modified;
+    }
+    public async Task Delete<T>(T obj) where T : class
+    {
+      await Task.Run(() => _context.Set<T>().Remove(obj));
     }
 
   }
