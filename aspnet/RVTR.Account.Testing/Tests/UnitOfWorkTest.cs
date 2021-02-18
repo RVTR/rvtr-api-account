@@ -7,22 +7,8 @@ using Xunit;
 
 namespace RVTR.Account.Testing.Tests
 {
-  public class UnitOfWorkTest
+  public class UnitOfWorkTest : DataTest
   {
-    protected readonly DbContextOptions<AccountContext> Options;
-    protected UnitOfWork unitOfWork;
-    public UnitOfWorkTest()
-    {
-      unitOfWork = new UnitOfWork(new AccountContext(Options));
-    }
-
-    [Fact]
-    public void Test_AccountRepo()
-    {
-      var actual = unitOfWork.AccountRepository;
-      Assert.IsType<AccountRepository>(actual);
-    }
-
     // [Fact]
     // public async void Test_CommitAsync()
     // {
