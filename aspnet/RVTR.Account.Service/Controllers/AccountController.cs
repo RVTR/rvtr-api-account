@@ -33,6 +33,10 @@ namespace RVTR.Account.Service.Controllers
       _logger = logger;
       _unitOfWork = unitOfWork;
     }
+    public AccountController(UnitOfWork unitOfWork)
+    {
+      _unitOfWork = unitOfWork;
+    }
 
     /// <summary>
     /// Delete a user's account by email

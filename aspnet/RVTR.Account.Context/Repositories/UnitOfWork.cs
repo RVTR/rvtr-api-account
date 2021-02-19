@@ -15,7 +15,7 @@ namespace RVTR.Account.Context.Repositories
   {
     private readonly AccountContext _context;
     private AccountRepository _accountRepository;
-
+    public UnitOfWork(){}
     public UnitOfWork(AccountContext context)
     {
       _context = context;

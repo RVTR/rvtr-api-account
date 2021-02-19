@@ -9,19 +9,15 @@ namespace RVTR.Account.Testing.Tests
 {
   public class UnitOfWorkTest : DataTest
   {
-    // [Fact]
-    // public async void Test_CommitAsync()
-    // {
-    //   var actual = await unitOfWork.CommitAsync();
-    //   Assert.Equal(0, actual);
-    // }
-
-    // [Fact]
-    // public async void Test_GetAll()
-    // {
-    //   var actual = await unitOfWork.GetAll<T>();
-    //   Assert.Collection<T>(actual);
-    // }
-
+    [Fact]
+    public void Test_AccountInstance()
+    {
+      using (var ctx = new AccountContext(Options))
+      {
+        UnitOfWork _unit = new UnitOfWork(ctx);
+        var account = _unit.AccountRepository;
+        Assert.IsType<AccountRepository>(account);
+      }
+    }
   }
 }
