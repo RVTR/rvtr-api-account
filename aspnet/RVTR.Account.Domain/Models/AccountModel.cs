@@ -14,32 +14,32 @@ namespace RVTR.Account.Domain.Models
     [EmailAddress(ErrorMessage = "must be a real email address.")]
     public string Email { get; set; }
 
-    [Required(ErrorMessage = "Name required")]
-    [MaxLength(50, ErrorMessage = "Name must be fewer than 50 characters.")]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
-    public string Name { get; set; }
-
-    public IEnumerable<PaymentModel> Payments { get; set; } = new List<PaymentModel>();
-
-    public IEnumerable<ProfileModel> Profiles { get; set; } = new List<ProfileModel>();
-
+    public List<PaymentModel> Payments { get; set; }
+    public List<ProfileModel> Profiles { get; set; }
 
     /// <summary>
     /// Empty constructor
     /// </summary>
-    public AccountModel() { }
-
-    /// <summary>
-    /// Constructor that takes a name and an email
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="email"></param>
-    public AccountModel(string name, string email)
+    public AccountModel()
     {
-      Name = name;
-      Email = email;
+      Profiles = new List<ProfileModel>();
+      Payments  = new List<PaymentModel>();
     }
 
+    /// <summary>
+    /// Constructor that takes a first name, last name, and an email
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="email"></param>
+    public AccountModel(string firstName, string lastName, string email)
+    {
+      Email = email;
+      Profiles = new List<ProfileModel> {
+        new ProfileModel(firstName, lastName, email, true)
+      };
+      Payments  = new List<PaymentModel>();
+    }
 
     /// <summary>
     /// Represents the _Account_ `Validate` method
@@ -48,9 +48,9 @@ namespace RVTR.Account.Domain.Models
     /// <returns></returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-      if (string.IsNullOrEmpty(Name))
+      if (Profiles.Count == 0)
       {
-        yield return new ValidationResult("Account name cannot be null.");
+        yield return new ValidationResult("Number of Profiles can't be zero");
       }
     }
   }

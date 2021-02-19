@@ -8,9 +8,9 @@ namespace RVTR.Account.Testing.Tests
 {
   public class RepositoryTest : DataTest
   {
-    private readonly AccountModel _account = new AccountModel() { EntityId = 3 };
-    private readonly ProfileModel _profile = new ProfileModel() { FamilyName = "FN", GivenName = "GN", EntityId = 3, Email = "anemail@random.com", Phone = "123456789", Type = "" };
-    private readonly AddressModel _address = new AddressModel() { EntityId = 3, AccountId = 3 };
+    private readonly AccountModel _account = new AccountModel() { EntityId = 1, Email = "ddowd97@gmail.com" };
+    private readonly ProfileModel _profile = new ProfileModel() { FamilyName = "Dowd", GivenName = "David", EntityId = 1, Email = "ddowd97@gmail.com", Phone = "123456789", Type = "Adult" };
+    private readonly AddressModel _address = new AddressModel() { EntityId = 1, AccountId = 1 };
 
     [Fact]
     public async void Test_Repository_Delete()

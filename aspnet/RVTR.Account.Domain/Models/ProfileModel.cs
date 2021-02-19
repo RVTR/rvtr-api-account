@@ -9,18 +9,20 @@ namespace RVTR.Account.Domain.Models
   public class ProfileModel : AEntity, IValidatableObject
   {
 
+    public bool IsAccountHolder { get; }
+
     [Required(ErrorMessage = "Email address required")]
     [EmailAddress(ErrorMessage = "must be a real email address.")]
     public string Email { get; set; }
 
     [Required(ErrorMessage = "Family name required")]
     [MaxLength(50, ErrorMessage = "Max length of 50 characters")]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
+    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "Family name can only use letters and cannot be an empty string.")]
     public string FamilyName { get; set; }
 
     [Required(ErrorMessage = "Given name name required")]
     [MaxLength(50, ErrorMessage = "Max length of 50 characters")]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$", ErrorMessage = "Name must start with a capital letter and only use letters.")]
+    [RegularExpression(@"[a-zA-Z-]+", ErrorMessage = "Given name can only use letters and cannot be an empty string.")]
     public string GivenName { get; set; }
 
     [Required(ErrorMessage = "Phone number required")]
@@ -33,6 +35,26 @@ namespace RVTR.Account.Domain.Models
 
     public int AccountModelId { get; set; }
 
+    /// <summary>
+    /// Empty Constructor
+    /// </summary>
+    public ProfileModel(){}
+
+    /// <summary>
+    /// Constructor that takes a first name, last name, email, and isAccountHolder value
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <param name="lastName"></param>
+    /// <param name="email"></param>
+    /// <param name="isAccountHolder"></param>
+    public ProfileModel(string firstName, string lastName, string email, bool isAccountHolder)
+    {
+      GivenName = firstName;
+      FamilyName = lastName;
+      Email = email;
+      IsAccountHolder = isAccountHolder;
+    }
+
     [RegularExpression(@"^(http(s?):\/\/)[^\s]*$", ErrorMessage = "Image URI must be a real image URI.")]
     public string ImageUri { get; set; } = "https://bulma.io/images/placeholders/256x256.png"; //Default is bulma placeholder
 
@@ -43,21 +65,9 @@ namespace RVTR.Account.Domain.Models
     /// <returns></returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-      if (string.IsNullOrEmpty(Email))
+      if (GivenName == FamilyName)
       {
-        yield return new ValidationResult("Email cannot be null.");
-      }
-      if (string.IsNullOrEmpty(FamilyName))
-      {
-        yield return new ValidationResult("familyName cannot be null.");
-      }
-      if (string.IsNullOrEmpty(GivenName))
-      {
-        yield return new ValidationResult("givenName cannot be null.");
-      }
-      if (string.IsNullOrEmpty(Phone))
-      {
-        yield return new ValidationResult("Phone cannot be null.");
+        yield return new ValidationResult("Given name and Family name can't be the same.");
       }
     }
   }
