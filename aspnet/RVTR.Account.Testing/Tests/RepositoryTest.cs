@@ -123,11 +123,11 @@ namespace RVTR.Account.Testing.Tests
         UnitOfWork _unit = new UnitOfWork(ctx);
         var account = await ctx.Accounts.FirstAsync();
 
-        account.Name = "name";
+        account.Email = "d@test.com";
         await _unit.Update(account);
 
         var result = ctx.Accounts.Find(account.EntityId);
-        Assert.Equal(account.Name, result.Name);
+        Assert.Equal(account.Email, result.Email);
         Assert.Equal(EntityState.Modified, ctx.Entry(result).State);
       }
 
