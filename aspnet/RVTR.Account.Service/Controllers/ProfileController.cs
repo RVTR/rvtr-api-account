@@ -52,7 +52,7 @@ namespace RVTR.Account.Service.Controllers
 
         return Ok(MessageObject.Success);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 
@@ -68,7 +68,7 @@ namespace RVTR.Account.Service.Controllers
     [ProducesResponseType(typeof(IEnumerable<ProfileModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get()
     {
-      return Ok(await _unitOfWork.Profile.SelectAsync());
+      return Ok(await _unitOfWork.Profile.SelectAsync(e => e.IsActive == true));
     }
 
     /// <summary>
@@ -106,6 +106,35 @@ namespace RVTR.Account.Service.Controllers
       return Accepted(profile);
     }
 
+
+    /// <summary>
+    /// Deactivate a profile from an account
+    /// </summary>
+    /// <param name="ID"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("Deactivate")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> Deactivate(long ID)
+    {
+      try
+      {
+        var result = (await _unitOfWork.Profile.SelectAsync(p => p.EntityId == ID)).FirstOrDefault();
+        result.IsActive = false;
+
+        _unitOfWork.Profile.Update(result);
+        await _unitOfWork.CommitAsync();
+
+        return Accepted();
+      }
+      catch (Exception error)
+      {
+        _logger.LogError(error, error.Message);
+
+        return NotFound(new ErrorObject($"Profile with ID number {ID} does not exist."));
+      }
+    }
+
     /// <summary>
     /// Update a user's profile
     /// </summary>
@@ -124,7 +153,7 @@ namespace RVTR.Account.Service.Controllers
 
         return Accepted(profile);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 

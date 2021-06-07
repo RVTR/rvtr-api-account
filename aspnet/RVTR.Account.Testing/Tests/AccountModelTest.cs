@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using RVTR.Account.Domain.Models;
@@ -7,6 +8,7 @@ namespace RVTR.Account.Testing.Tests
 {
   public class AccountModelTest
   {
+    private static DateTime adultAge = new DateTime(2003, 1, 30);
     public static readonly IEnumerable<object[]> Accounts = new List<object[]>
     {
       new object[]
@@ -18,7 +20,7 @@ namespace RVTR.Account.Testing.Tests
           Payments = new List<PaymentModel>(),
           Profiles = new List<ProfileModel>
             {
-              new ProfileModel("John", "Smith", "jsmith@gmail.com", true)
+              new ProfileModel("John", "Smith", "jsmith@gmail.com", true, adultAge)
             },
           Email = "test@gmail.com"
         }
@@ -40,10 +42,10 @@ namespace RVTR.Account.Testing.Tests
     /// </summary>
     /// <param name="account"></param>
     [Theory]
-    [InlineData("Jim", "Peters", "abcd")]
-    public void Test_Create_AccountModel_BadEmail(string firstName, string lastName,string email)
+    [InlineData("Jim", "Peters", "abcd", "2000-01-01")]
+    public void Test_Create_AccountModel_BadEmail(string firstName, string lastName, string email, DateTime birthDate)
     {
-      AccountModel account = new AccountModel(firstName, lastName, email); //bad email given
+      AccountModel account = new AccountModel(firstName, lastName, email, birthDate); //bad email given
 
       var validationContext = new ValidationContext(account);
       var actual = Validator.TryValidateObject(account, validationContext, null, true);
