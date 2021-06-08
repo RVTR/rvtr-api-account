@@ -35,30 +35,6 @@ namespace RVTR.Account.Service.Controllers
       _unitOfWork = unitOfWork;
     }
 
-    /// <summary>
-    /// Delete a user's profile
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
-    {
-      try
-      {
-        await _unitOfWork.Profile.DeleteAsync(id);
-        await _unitOfWork.CommitAsync();
-
-        return Ok(MessageObject.Success);
-      }
-      catch(Exception error)
-      {
-        _logger.LogError(error, error.Message);
-
-        return NotFound(new ErrorObject($"Profile with ID number {id} does not exist."));
-      }
-    }
 
     /// <summary>
     /// Get all profiles
@@ -68,24 +44,24 @@ namespace RVTR.Account.Service.Controllers
     [ProducesResponseType(typeof(IEnumerable<ProfileModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get()
     {
-      return Ok(await _unitOfWork.Profile.SelectAsync());
+      return Ok(await _unitOfWork.Profile.SelectAsync(e => e.IsActive == true));
     }
 
     /// <summary>
-    /// Get a user's profile with profile ID number
+    /// Get a user's profile with profile email
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{email}")]
     [ProducesResponseType(typeof(ProfileModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(string email)
     {
-      var profileModel = (await _unitOfWork.Profile.SelectAsync(e => e.EntityId == id)).FirstOrDefault();
+      var profileModel = (await _unitOfWork.Profile.SelectAsync(e => e.Email == email)).FirstOrDefault();
 
       if (profileModel == null)
       {
-        return NotFound(new ErrorObject($"Profile with ID number {id} does not exist."));
+        return NotFound(new ErrorObject($"Profile with Email {email} does not exist."));
       }
 
       return Ok(profileModel);
@@ -106,6 +82,60 @@ namespace RVTR.Account.Service.Controllers
       return Accepted(profile);
     }
 
+
+    /// <summary>
+    /// Deactivate a profile from an account
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("Deactivate")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> Deactivate(string email)
+    {
+      try
+      {
+        var result = (await _unitOfWork.Profile.SelectAsync(p => p.Email == email)).FirstOrDefault();
+        result.IsActive = false;
+
+        _unitOfWork.Profile.Update(result);
+        await _unitOfWork.CommitAsync();
+
+        return Accepted();
+      }
+      catch (Exception error)
+      {
+        _logger.LogError(error, error.Message);
+
+        return NotFound(new ErrorObject($"Profile with Email {email} does not exist."));
+      }
+    }/// <summary>
+     /// Activates a profile from an account
+     /// </summary>
+     /// <param name="email"></param>
+     /// <returns></returns>
+    [HttpPost]
+    [Route("Activate")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> Activate(string email)
+    {
+      try
+      {
+        var result = (await _unitOfWork.Profile.SelectAsync(p => p.Email == email)).FirstOrDefault();
+        result.IsActive = true;
+
+        _unitOfWork.Profile.Update(result);
+        await _unitOfWork.CommitAsync();
+
+        return Accepted();
+      }
+      catch (Exception error)
+      {
+        _logger.LogError(error, error.Message);
+
+        return NotFound(new ErrorObject($"Profile with Email {email} does not exist."));
+      }
+    }
     /// <summary>
     /// Update a user's profile
     /// </summary>
@@ -124,11 +154,11 @@ namespace RVTR.Account.Service.Controllers
 
         return Accepted(profile);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 
-        return NotFound(new ErrorObject($"Profile with ID number {profile.EntityId} does not exist."));
+        return NotFound(new ErrorObject($"Profile with Email {profile.Email} does not exist."));
       }
     }
   }

@@ -7,12 +7,14 @@ namespace RVTR.Account.Context
   /// <summary>
   /// Represents the _AccountContext_ class
   /// </summary>
+
   public class AccountContext : DbContext
   {
     public DbSet<AccountModel> Accounts { get; set; }
     public DbSet<ProfileModel> Profiles { get; set; }
     public DbSet<PaymentModel> Payments { get; set; }
     public DbSet<AddressModel> Addresses { get; set; }
+    private static DateTime adultAge = new DateTime(2003, 1, 30);
 
     /// <summary>
     ///
@@ -62,13 +64,16 @@ namespace RVTR.Account.Context
 
       modelBuilder.Entity<ProfileModel>().HasData(new ProfileModel()
       {
+
         EntityId = 1,
         AccountModelId = 1,
         GivenName = "John",
         FamilyName = "Smith",
         Email = "jsmith@gmail.com",
         Phone = "123445679",
-        Type = "Adult"
+        Type = "Adult",
+        DateOfBirth = adultAge,
+        IsActive = true
       });
     }
   }

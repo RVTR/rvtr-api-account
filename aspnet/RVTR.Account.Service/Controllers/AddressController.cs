@@ -36,27 +36,30 @@ namespace RVTR.Account.Service.Controllers
     }
 
     /// <summary>
-    /// Delete a user's address
+    /// Delete a user's address by email
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
-    [HttpDelete("{id}")]
+    [HttpDelete("{email}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string email)
     {
       try
       {
-        await _unitOfWork.Address.DeleteAsync(id);
+        var result = (await _unitOfWork.Account.SelectAsync(p => p.Email == email)).FirstOrDefault();
+
+        result.Address = null;
+        _unitOfWork.Account.Update(result);
         await _unitOfWork.CommitAsync();
 
         return Ok(MessageObject.Success);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 
-        return NotFound(new ErrorObject($"Address with ID number {id} does not exist."));
+        return NotFound(new ErrorObject($"Address with Email {email} does not exist."));
       }
     }
 
@@ -72,23 +75,27 @@ namespace RVTR.Account.Service.Controllers
     }
 
     /// <summary>
-    /// Get a user's address with address ID number
+    /// Get a user's address with their email
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{email}")]
     [ProducesResponseType(typeof(AddressModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(string email)
     {
-      var addressModel = (await _unitOfWork.Address.SelectAsync(e => e.EntityId == id)).FirstOrDefault();
-
-      if (addressModel == null)
+      var accountModel = (await _unitOfWork.Account.SelectAsync(e => e.Email == email)).FirstOrDefault();
+      if (accountModel == null)
       {
-        return NotFound(new ErrorObject($"Address with ID number {id} does not exist."));
-      }
+        return NotFound(new ErrorObject($"Account with email {email} does not exist."));
 
-      return Ok(addressModel);
+      }
+      if (accountModel.Address == null)
+      {
+        return NotFound(new ErrorObject($"Address cannot be found."));
+
+      }
+      return Ok(accountModel);
     }
 
     /// <summary>
@@ -124,7 +131,7 @@ namespace RVTR.Account.Service.Controllers
 
         return Accepted(address);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 

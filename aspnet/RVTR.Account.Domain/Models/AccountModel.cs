@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,7 +24,7 @@ namespace RVTR.Account.Domain.Models
     public AccountModel()
     {
       Profiles = new List<ProfileModel>();
-      Payments  = new List<PaymentModel>();
+      Payments = new List<PaymentModel>();
     }
 
     /// <summary>
@@ -32,13 +33,14 @@ namespace RVTR.Account.Domain.Models
     /// <param name="firstName"></param>
     /// <param name="lastName"></param>
     /// <param name="email"></param>
-    public AccountModel(string firstName, string lastName, string email)
+    /// <param name="birtDate"></param>
+    public AccountModel(string firstName, string lastName, string email, DateTime birthDate)
     {
       Email = email;
       Profiles = new List<ProfileModel> {
-        new ProfileModel(firstName, lastName, email, true)
+        new ProfileModel(firstName, lastName, email, true, birthDate)
       };
-      Payments  = new List<PaymentModel>();
+      Payments = new List<PaymentModel>();
     }
 
     /// <summary>

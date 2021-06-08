@@ -51,25 +51,25 @@ namespace RVTR.Account.UnitTesting.Tests
     }
 
     [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    public async void Test_Controller_Delete(int id)
+    [InlineData("jsmith@gmail.com", 1)]
+    [InlineData("fake@email.com", 0)]
+    public async void Test_Controller_Delete(string email, int id)
     {
-      var resultFail = await _controller.Delete(id);
-      var resultPass = await _controller.Delete(id);
+      var resultFail = await _controller.Delete(email, id);
+      var resultPass = await _controller.Delete(email, id);
 
       Assert.NotNull(resultFail);
       Assert.NotNull(resultPass);
     }
 
     [Theory]
-    [InlineData(-5)]
-    [InlineData(-1)]
-    public async void Test_Controller_Get(int id)
+    [InlineData("jsmith@gmail.com")]
+    [InlineData("fake@email.com")]
+    public async void Test_Controller_Get(string email)
     {
-      var resultMany = await _controller.Get(id);
-      var resultFail = await _controller.Get(id);
-      var resultOne = await _controller.Get(id);
+      var resultMany = await _controller.Get(email);
+      var resultFail = await _controller.Get(email);
+      var resultOne = await _controller.Get(email);
 
       Assert.NotNull(resultMany);
       Assert.NotNull(resultFail);
