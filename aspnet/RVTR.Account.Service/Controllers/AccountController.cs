@@ -40,10 +40,11 @@ namespace RVTR.Account.Service.Controllers
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    [HttpDelete("{email}")]
+    [HttpDelete]
+    [Route("DeleteAccount/{email}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(string email)
+    public async Task<IActionResult> DeleteAccount(string email)
     {
       try
       {
@@ -54,7 +55,7 @@ namespace RVTR.Account.Service.Controllers
 
         return Ok(MessageObject.Success);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 
@@ -67,8 +68,9 @@ namespace RVTR.Account.Service.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Route("GetAccounts")]
     [ProducesResponseType(typeof(IEnumerable<AccountModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAccounts()
     {
       return Ok(await _unitOfWork.Account.SelectAsync());
     }
@@ -78,10 +80,11 @@ namespace RVTR.Account.Service.Controllers
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    [HttpGet("{email}")]
+    [HttpGet]
+    [Route("GetAccountByEmail/{email}")]
     [ProducesResponseType(typeof(AccountModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(string email)
+    public async Task<IActionResult> GetAccountByEmail(string email)
     {
       var accountModel = (await _unitOfWork.Account.SelectAsync(e => e.Email == email)).FirstOrDefault();
 
@@ -99,8 +102,9 @@ namespace RVTR.Account.Service.Controllers
     /// <param name="account"></param>
     /// <returns></returns>
     [HttpPost]
+    [Route("AddAccount")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public async Task<IActionResult> Post([FromBody] AccountModel account)
+    public async Task<IActionResult> AddAccount([FromBody] AccountModel account)
     {
       await _unitOfWork.Account.InsertAsync(account);
       await _unitOfWork.CommitAsync();
@@ -114,9 +118,10 @@ namespace RVTR.Account.Service.Controllers
     /// <param name="account"></param>
     /// <returns></returns>
     [HttpPut]
+    [Route("UpdateAccount")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Put([FromBody] AccountModel account)
+    public async Task<IActionResult> UpdateAccount([FromBody] AccountModel account)
     {
       try
       {
@@ -131,6 +136,111 @@ namespace RVTR.Account.Service.Controllers
         _logger.LogError(error, error.Message);
 
         return NotFound(new ErrorObject($"Account with ID number {account.EntityId} does not exist"));
+      }
+    }
+
+    /// <summary>
+    /// Get all profiles
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("GetAllProfile")]
+    [ProducesResponseType(typeof(IEnumerable<ProfileModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllProfile()
+    {
+      return Ok(await _unitOfWork.Profile.SelectAsync(e => e.IsActive == true));
+    }
+
+    /// <summary>
+    /// Get a user's profile with profile email
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("GetProfileByEmail/{email}")]
+    [ProducesResponseType(typeof(ProfileModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetProfileByEmail(string email)
+    {
+      var profileModel = (await _unitOfWork.Profile.SelectAsync(e => e.Email == email)).FirstOrDefault();
+
+      if (profileModel == null)
+      {
+        return NotFound(new ErrorObject($"Profile with Email {email} does not exist."));
+      }
+
+      return Ok(profileModel);
+    }
+
+    /// <summary>
+    /// Add a profile to an account
+    /// </summary>
+    /// <param name="profile"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("AddProfile")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> AddProfile(ProfileModel profile)
+    {
+      await _unitOfWork.Profile.InsertAsync(profile);
+      await _unitOfWork.CommitAsync();
+
+      return Accepted(profile);
+    }
+
+
+    /// <summary>
+    /// Deactivate a profile from an account
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("Deactivate")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> DeactivateProfile(string email)
+    {
+      try
+      {
+        var result = (await _unitOfWork.Profile.SelectAsync(p => p.Email == email)).FirstOrDefault();
+        result.IsActive = false;
+
+        _unitOfWork.Profile.Update(result);
+        await _unitOfWork.CommitAsync();
+
+        return Accepted();
+      }
+      catch (Exception error)
+      {
+        _logger.LogError(error, error.Message);
+
+        return NotFound(new ErrorObject($"Profile with Email {email} does not exist."));
+      }
+    }
+
+    /// <summary>
+    /// Update a user's profile
+    /// </summary>
+    /// <param name="profile"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Route("UpdateProfile")]
+    public async Task<IActionResult> UpdateProfile(ProfileModel profile)
+    {
+      try
+      {
+        _unitOfWork.Profile.Update(profile);
+
+        await _unitOfWork.CommitAsync();
+
+        return Accepted(profile);
+      }
+      catch (Exception error)
+      {
+        _logger.LogError(error, error.Message);
+
+        return NotFound(new ErrorObject($"Profile with Email {profile.Email} does not exist."));
       }
     }
   }

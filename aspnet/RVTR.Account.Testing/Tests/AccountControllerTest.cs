@@ -40,8 +40,8 @@ namespace RVTR.Account.Testing.Tests
     [Fact]
     public async void Test_Controller_Delete()
     {
-      var resultFail = await _controller.Delete("fake@email.com");
-      var resultPass = await _controller.Delete("Test@test.com");
+      var resultFail = await _controller.DeleteAccount("fake@email.com");
+      var resultPass = await _controller.DeleteAccount("Test@test.com");
 
       Assert.NotNull(resultFail);
       Assert.NotNull(resultPass);
@@ -50,9 +50,9 @@ namespace RVTR.Account.Testing.Tests
     [Fact]
     public async void Test_Controller_Get()
     {
-      var resultMany = await _controller.Get();
-      var resultFail = await _controller.Get("fake@email.com");
-      var resultOne = await _controller.Get("Test@test.com");
+      var resultMany = await _controller.GetAccounts();
+      var resultFail = await _controller.GetAccountByEmail("fake@email.com");
+      var resultOne = await _controller.GetAccountByEmail("Test@test.com");
 
       Assert.NotNull(resultMany);
       Assert.NotNull(resultFail);
@@ -62,7 +62,7 @@ namespace RVTR.Account.Testing.Tests
     [Fact]
     public async void Test_Controller_Post()
     {
-      var resultPass = await _controller.Post(new AccountModel());
+      var resultPass = await _controller.AddAccount(new AccountModel());
 
       Assert.NotNull(resultPass);
     }
@@ -70,7 +70,7 @@ namespace RVTR.Account.Testing.Tests
     [Fact]
     public async void Test_Controller_Put()
     {
-      var resultPass = await _controller.Put(new AccountModel());
+      var resultPass = await _controller.UpdateAccount(new AccountModel());
 
       Assert.NotNull(resultPass);
     }
@@ -78,9 +78,27 @@ namespace RVTR.Account.Testing.Tests
     [Fact]
     public async void Test_404_Response()
     {
-      var result = await _controller.Get("fake@email.com");
+      var result = await _controller.GetAccountByEmail("fake@email.com");
 
       Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact] 
+    public async void Test_Controller_DeleteProfile()
+    {
+      var resultFail = await _controller.DeactivateProfile("fake@email.com");
+      var resultPass = await _controller.DeactivateProfile("Test@test.com");
+
+      Assert.NotNull(resultFail);
+      Assert.NotNull(resultPass);
+    }
+
+    [Fact]
+    public async void Test_Controller_PutProfile()
+    {
+      var resultPass = await _controller.UpdateProfile(new ProfileModel());
+
+      Assert.NotNull(resultPass);
     }
   }
 }
