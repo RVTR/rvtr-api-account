@@ -54,7 +54,7 @@ namespace RVTR.Account.Service.Controllers
 
         return Ok(MessageObject.Success);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 

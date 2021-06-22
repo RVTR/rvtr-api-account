@@ -11,17 +11,19 @@ namespace RVTR.Account.Testing.Tests
     {
       new object[]
       {
+
         new AddressModel()
         {
           EntityId = 0,
-          City = "City",
+          City = "Helena",
           Country = "USA",
-          PostalCode = "11111",
-          StateProvince = "NC",
-          Street = "street",
+          PostalCode = "59601",
+          StateProvince = "MT",
+          Street = "6 Washington Pl",
           AccountId = 0,
           Account = new AccountModel(),
         }
+
       }
     };
 

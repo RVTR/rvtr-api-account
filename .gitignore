@@ -14,3 +14,6 @@ appsettings*
 
 # sonarcloud
 .sonarqube/
+
+#environment variables
+.env
