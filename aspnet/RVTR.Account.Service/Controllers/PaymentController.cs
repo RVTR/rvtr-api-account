@@ -38,26 +38,39 @@ namespace RVTR.Account.Service.Controllers
     /// <summary>
     /// Deletes a user's payment information
     /// </summary>
+    /// <param name="email"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpDelete("{id}")]
+    [HttpDelete("{email}/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string email, int id)
     {
-      try
+      var accountModel = (await _unitOfWork.Account.SelectAsync(e => e.Email == email)).FirstOrDefault();
+      if (accountModel == null)
       {
-        await _unitOfWork.Payment.DeleteAsync(id);
-        await _unitOfWork.CommitAsync();
-
-        return Ok(MessageObject.Success);
+        return NotFound(new ErrorObject($"Account with email: {email} does not exist"));
       }
-      catch(Exception error)
+      foreach (var item in accountModel.Payments)
       {
-        _logger.LogError(error, error.Message);
+        if (item.EntityId == id)
+        {
+          try
+          {
+            await _unitOfWork.Payment.DeleteAsync(id);
+            await _unitOfWork.CommitAsync();
 
-        return NotFound(new ErrorObject($"Payment with ID number {id} does not exist"));
+            return Ok(MessageObject.Success);
+          }
+          catch (Exception error)
+          {
+            _logger.LogError(error, error.Message);
+
+            return NotFound(new ErrorObject($"Payment with ID number {id} does not exist"));
+          }
+        }
       }
+      return NotFound(new ErrorObject($"Payment with ID number {id} does not exist"));
     }
 
     /// <summary>
@@ -72,23 +85,23 @@ namespace RVTR.Account.Service.Controllers
     }
 
     /// <summary>
-    /// Retrieves a payment by payment ID number
+    /// Retrieves a payment by user's email
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="email"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{email}")]
     [ProducesResponseType(typeof(PaymentModel), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(string email)
     {
-      var paymentModel = (await _unitOfWork.Payment.SelectAsync(e => e.EntityId == id)).FirstOrDefault();
+      var accountModel = (await _unitOfWork.Account.SelectAsync(e => e.Email == email)).FirstOrDefault();
 
-      if (paymentModel == null)
+      if (accountModel.Payments == null)
       {
-        return NotFound(new ErrorObject($"Payment with ID number {id} does not exist."));
+        return NotFound(new ErrorObject($"Account with email: {email} does not exist."));
       }
 
-      return Ok(paymentModel);
+      return Ok(accountModel.Payments);
     }
 
     /// <summary>
@@ -124,7 +137,7 @@ namespace RVTR.Account.Service.Controllers
 
         return Accepted(payment);
       }
-      catch(Exception error)
+      catch (Exception error)
       {
         _logger.LogError(error, error.Message);
 
